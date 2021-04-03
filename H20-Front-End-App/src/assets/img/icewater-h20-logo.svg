@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 90 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="water-drop">
+        <g transform="matrix(1.10708,0,0,1.10708,-4.76749,-4.89492)">
+            <path d="M45,85C45.033,85 45.067,85 45.1,85C59.638,85 71.615,73.068 71.67,58.53C71.67,43.92 45,5 45,5C45,5 18.33,43.92 18.33,58.53C18.385,73.068 30.362,85 44.9,85C44.933,85 44.967,85 45,85Z" style="fill:rgb(113,173,224);fill-rule:nonzero;"/>
+        </g>
+        <path d="M42.196,15.691C42.196,15.691 32.87,40.07 33.2,51.18C33.39,57.18 34.724,61.665 36.2,64.73C41.477,75.686 31.194,72.657 28.254,66.567C26.769,63.444 25.776,58.668 25.8,55.21C25.84,44.14 42.196,15.691 42.196,15.691Z" style="fill:rgb(209,237,252);fill-rule:nonzero;"/>
+    </g>
+</svg>

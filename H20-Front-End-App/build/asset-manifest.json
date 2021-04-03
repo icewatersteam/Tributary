@@ -1,0 +1,42 @@
+{
+  "files": {
+    "static/js/0.7c1f7c63.chunk.js": "/static/js/0.7c1f7c63.chunk.js",
+    "main.css": "/static/css/main.aa386148.chunk.css",
+    "main.js": "/static/js/main.d2ddc44a.chunk.js",
+    "runtime-main.js": "/static/js/runtime-main.7e4ff51b.js",
+    "static/js/3.b80e3179.chunk.js": "/static/js/3.b80e3179.chunk.js",
+    "static/js/4.612f4e42.chunk.js": "/static/js/4.612f4e42.chunk.js",
+    "static/js/5.e2d4cfb3.chunk.js": "/static/js/5.e2d4cfb3.chunk.js",
+    "static/js/6.7037a5ba.chunk.js": "/static/js/6.7037a5ba.chunk.js",
+    "static/js/7.003ab296.chunk.js": "/static/js/7.003ab296.chunk.js",
+    "static/js/8.3cf511ef.chunk.js": "/static/js/8.3cf511ef.chunk.js",
+    "static/js/9.52faa4a4.chunk.js": "/static/js/9.52faa4a4.chunk.js",
+    "static/js/10.e19fa688.chunk.js": "/static/js/10.e19fa688.chunk.js",
+    "index.html": "/index.html",
+    "precache-manifest.a622f42066238febed71be9f9ce3b8d5.js": "/precache-manifest.a622f42066238febed71be9f9ce3b8d5.js",
+    "service-worker.js": "/service-worker.js",
+    "static/js/3.b80e3179.chunk.js.LICENSE.txt": "/static/js/3.b80e3179.chunk.js.LICENSE.txt",
+    "static/js/5.e2d4cfb3.chunk.js.LICENSE.txt": "/static/js/5.e2d4cfb3.chunk.js.LICENSE.txt",
+    "static/js/6.7037a5ba.chunk.js.LICENSE.txt": "/static/js/6.7037a5ba.chunk.js.LICENSE.txt",
+    "static/js/7.003ab296.chunk.js.LICENSE.txt": "/static/js/7.003ab296.chunk.js.LICENSE.txt",
+    "static/js/8.3cf511ef.chunk.js.LICENSE.txt": "/static/js/8.3cf511ef.chunk.js.LICENSE.txt",
+    "static/media/DAI.png": "/static/media/DAI.17db7fc2.png",
+    "static/media/USDC.png": "/static/media/USDC.c76b33ca.png",
+    "static/media/USDT.png": "/static/media/USDT.839a0f0d.png",
+    "static/media/basis-bond-logo.svg": "/static/media/basis-bond-logo.80fb5592.svg",
+    "static/media/basis-cash-logo.svg": "/static/media/basis-cash-logo.89e29678.svg",
+    "static/media/basis-share-logo.svg": "/static/media/basis-share-logo.466cf09b.svg",
+    "static/media/farmer.png": "/static/media/farmer.b40f299d.png",
+    "static/media/icewater-h20-logo.svg": "/static/media/icewater-h20-logo.cc7fec5e.svg",
+    "static/media/icewater-ice-logo.svg": "/static/media/icewater-ice-logo.42d80f39.svg",
+    "static/media/icewater-steam-logo.svg": "/static/media/icewater-steam-logo.f3e2da43.svg",
+    "static/media/sUSD.png": "/static/media/sUSD.f8fec857.png",
+    "static/media/ycrv.png": "/static/media/ycrv.88ae1ab3.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7e4ff51b.js",
+    "static/js/3.b80e3179.chunk.js",
+    "static/css/main.aa386148.chunk.css",
+    "static/js/main.d2ddc44a.chunk.js"
+  ]
+}

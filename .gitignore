@@ -6,6 +6,12 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Notes
+notes.md
+
+# os
+.DS_Store
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -36,10 +42,15 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+*/build/Release
 
 # Dependency directories
 node_modules/
 jspm_packages/
+
+*/node_modules
+*/jspm_packages
+
 
 # TypeScript v1 declaration files
 typings/
@@ -65,8 +76,15 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# Yarn Integrity file
+# Yarn
+yarn.lock
 .yarn-integrity
+
+# Google Cloud & Firebase
+app.yaml
+.firebaserc
+firebase.json
+.firebase
 
 # dotenv environment variables file
 .env

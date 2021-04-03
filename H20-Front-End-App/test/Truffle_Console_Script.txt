@@ -1,0 +1,79 @@
+Truffle_Console_Script
+
+let h2o = await Token.deployed()
+let accounts = await web3.eth.getAccounts()
+
+
+//iceMeltTest
+let sec = await h2o.secondsSinceLastIceMelt()
+sec.toNumber()
+
+h2o.meltIce()
+
+h2o.totalIceSupply()
+
+//icebid test
+
+h2o.transfer(accounts[1],20000,{from: accounts[0]})
+
+h2o.iceBid(6000,1,{from: accounts[1]})
+h2o.iceAsk(5500,1,{from: accounts[0]})
+
+h2o.iceBidAmount(accounts[1])
+h2o.iceBidPrice(accounts[1])
+h2o.iceAskAmount(accounts[0])
+h2o.iceAskPrice(accounts[0])
+
+h2o.balanceOfIce(accounts[1])
+
+h2o.steamBid(4000,1,{from: accounts[1]})
+h2o.steamAsk(3000,1,{from: accounts[0]})
+
+h2o.steamBidAmount(accounts[1])
+h2o.steamBidPrice(accounts[1])
+h2o.steamAskAmount(accounts[0])
+h2o.steamAskPrice(accounts[0])
+
+h2o.balanceOfSteam(accounts[1])
+
+
+
+
+//Getters
+h2o.totalIceSupply()
+
+//h2o.getTreasuryAddress()
+h2o.getIceMelt()
+h2o.getWaterIceRatio()
+h2o.getTargetIcePrice()
+h2o.getMinIcePrice()
+h2o.getMaxIcePrice()
+
+h2o.balanceOfIce(accounts[0])
+h2o.balanceOfWater(accounts[0])
+h2o.balanceOfSteam(accounts[0])
+h2o.totalIceSupply()
+h2o.totalWaterSupply()
+h2o.totalSteamSupply()
+
+h2o.iceBidAmount(accounts[1])
+h2o.iceBidPrice(accounts[1])
+h2o.iceAskAmount(accounts[0])
+h2o.iceAskPrice(accounts[0])
+
+h2o.steamBidAmount(accounts[0])
+h2o.steamBidPrice(accounts[0])
+h2o.steamAskAmount(accounts[0])
+h2o.steamAskPrice(accounts[0])
+
+h2o.blockTimestamp()
+
+let steamIndex = await h2o.currentSteamTransactionIndex()
+let iceIndex = await h2o.currentIceTransactionIndex()
+h2o.steamAmountForTransaction(steamIndex)
+h2o.steamPriceForTransaction(steamIndex)
+h2o.iceAmountForTransaction(iceIndex)
+h2o.icePriceForTransaction(iceIndex)
+
+
+
