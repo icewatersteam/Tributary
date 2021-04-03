@@ -1,15 +1,11 @@
 This is the Front End repo for Ice Water
 
-## Deploying public site on Firebase
+## H20-Front-End-Public
 
-```
-firebase deploy --only hosting:public
-```
+Public pages such as the home page.
 
-## Deploying app site on Firebase
+## H20-Front-End-App
 
-```
-firebase deploy --only hosting:app
-```
+App for connecting wallet and exchanging ice, water & steam.
 
 ## LICENSE: MIT
