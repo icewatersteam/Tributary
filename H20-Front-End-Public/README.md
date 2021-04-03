@@ -1,6 +1,9 @@
-# Getting Started with Create React App
+![Ice Water Title Image](https://icewater.money/static/media/ICE_Logo.12f08542.svg)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Ice Water App Interface
+
+This is front-end repository of [Ice Water](https://icewater.money).
+
 
 ## Available Scripts
 

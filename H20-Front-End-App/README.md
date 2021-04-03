@@ -1,58 +1,49 @@
-![Basis Cash Title Image](https://raw.githubusercontent.com/Basis-Cash/basiscash-protocol/master/assets/bg.jpeg)
+![Ice Water Title Image](https://icewater.money/static/media/ICE_Logo.12f08542.svg)
 
-# Basis Cash  Interface
+# Ice Water App Interface
 
-This is front-end repository of the [basis.cash](https://basis.cash/).
-
-## 💻 Set Up Environment
-
-To begin, you need to install dependencies with Yarn.
-
-```
- $ yarn
-```
-
-You should update **default provider URL** because our production provider URL is limited by CORS for security.
-On `src/config.ts`, please replace it:
-
-```diff
-- defaultProvider: 'https://mainnet.infura.io/v3/OLD_PROVIDER_URL',
-+ defaultProvider: 'https://mainnet.infura.io/v3/YOUR_PROVIDER_URL',
-```
-
-After it, you can launch the development server with following command.
-
-```
- $ yarn start
-```
-
-## 👩‍🌾 If You Want to Bring Your Own Contract...
-
-If you want to use different contract deployment on development,
-please build [basiscash-protocol](https://github.com/Basis-Cash/basiscash-protocol) and copy-n-paste 
-the deployment information generated on `build/deployment.<network>.json` into this project's deployment directory,
-which is `src/basis-cash/deployments`.
-
-Then, you need to change the deployment reference into yours. Suppose that the new deployment file is named `deployments.local.json`:
-
-```diff
-- deployments: require('./basis-cash/deployments/deployments.mainnet.json'),
-+ deployments: require('./basis-cash/deployments/deployments.local.json'),
-```
+This is front-end repository of [Ice Water](https://icewater.money).
 
 
-## Deploying on Firebase
+## Available Scripts
 
-```
-cd /Users/Jacob/Sites/H2O
-npm run build;
-firebase deploy -P staging;
-firebase deploy -P production;
-```
+In the project directory, you can run:
 
-## ⚒ Contributions
+### `yarn start`
 
-Contributions are welcome! Since we don't have any contribution guide / issue templates yet,
-please feel free to send PRs to the basiscash-frontend.
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-## LICENSE: MIT
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
+
+### `yarn test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `yarn build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `yarn eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
