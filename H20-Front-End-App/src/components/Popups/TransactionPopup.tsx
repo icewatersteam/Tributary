@@ -26,9 +26,9 @@ export default function TransactionPopup({
     <RowNoFlex>
       <div style={{ paddingRight: 16 }}>
         {success ? (
-          <CheckCircle color={theme.color.teal[200]} size={24} />
+          <CheckCircle color={theme.color.blue[200]} size={24} />
         ) : (
-          <AlertCircle color="#FF6871" size={24} />
+          <AlertCircle color={theme.color.red[200]} size={24} />
         )}
       </div>
       <AutoColumn gap="8px">
@@ -45,9 +45,9 @@ export default function TransactionPopup({
 
 const StyledPopupDesc = styled.span`
   font-weight: 500;
-  color: ${props => props.theme.color.grey[300]};
+  color: ${props => props.theme.color.grey[900]};
 `;
 
 const StyledLink = styled.a`
-  color: ${props => props.theme.color.grey[500]};
+  color: ${props => props.theme.color.grey[900]};
 `;

@@ -12,7 +12,12 @@ import { Trash } from 'react-feather';
 
 const MAX_TRANSACTION_HISTORY = 10;
 
-const TxModal: React.FC<ModalProps> = ({ onDismiss }) => {
+export interface TxModalProps extends ModalProps {
+  showPending?: boolean,
+  showRecent?: boolean,
+}
+
+const TxModal: React.FC<TxModalProps> = ({ onDismiss, showPending=true, showRecent=true  }) => {
   const allTransactions = useAllTransactions();
   const { clearAllTransactions } = useClearAllTransactions();
 
@@ -37,7 +42,7 @@ const TxModal: React.FC<ModalProps> = ({ onDismiss }) => {
           </StyledClearIconWrapper>
         )}
       </StyledTitleArea>
-      {pending?.length > 0 && (
+      {showPending && pending?.length > 0 && (
         <>
           <Label text="Pending transactions" />
           <StyledTransactionList>
@@ -46,7 +51,7 @@ const TxModal: React.FC<ModalProps> = ({ onDismiss }) => {
           <Spacer size="sm" />
         </>
       )}
-      {confirmed?.length > 0 && (
+      {showRecent && confirmed?.length > 0 && (
         <>
           <Label text="Recent transactions" />
           <StyledTransactionList>
@@ -58,7 +63,7 @@ const TxModal: React.FC<ModalProps> = ({ onDismiss }) => {
         <Label text="No transactions." color="#777" />
       )}
       <ModalActions>
-        <Button text="Close" onClick={onDismiss} />
+        <Button variant="secondary" text="Close" onClick={onDismiss} />
       </ModalActions>
     </StyledModal>
   )
@@ -76,14 +81,14 @@ const StyledTitleArea = styled.div`
 `;
 
 const StyledModalTitle = styled.div`
-  color: ${props => props.theme.color.grey[300]};
+  color: ${props => props.theme.color.grey[900]};
   flex: 1;
   font-size: 18px;
   font-weight: 700;
 `;
 
 const StyledClearIconWrapper = styled.div`
-  color: ${({ theme }) => theme.color.grey[300]};
+  color: ${({ theme }) => theme.color.grey[900]};
 `;
 
 const StyledTransactionList = styled.div`

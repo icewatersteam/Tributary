@@ -5,14 +5,13 @@ export type Configuration = {
   chainId: ChainId,
   etherscanUrl: string,
   defaultProvider: string,
+  contractAddress: string,
   deployments: Deployments,
   externalTokens: {[contractName: string]: [string, number]};
   config?: EthereumConfig,
-
   baseLaunchDate: Date,
   bondLaunchesAt: Date,
   boardroomLaunchesAt: Date,
-
   refreshInterval: number;
   gasLimitMultiplier: number;
 };

@@ -1,4 +1,4 @@
-![Ice Water Title Image](https://icewater.money/static/media/ICE_Logo.12f08542.svg)
+![Ice Water Title Image](https://app.icewater.money/icewater_color.svg)
 
 # Ice Water App Interface
 

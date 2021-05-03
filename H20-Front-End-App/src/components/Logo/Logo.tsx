@@ -2,12 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 
 import farmer from '../../assets/img/farmer.png';
+import icewaterLogo from '../../assets/img/icewater_logo_color.svg';
 
 const Logo: React.FC = () => {
   return (
-    <StyledLogo>
-      <img src={farmer} height="32" style={{ marginTop: -4 }} />
-      <StyledLink href="/">Ice Water</StyledLink>
+    <StyledLogo>      
+      <StyledLink href="/">
+        <img src={icewaterLogo} height="32" style={{ marginTop: -4 }} />
+      </StyledLink>
     </StyledLogo>
   );
 };

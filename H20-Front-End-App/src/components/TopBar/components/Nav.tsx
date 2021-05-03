@@ -28,14 +28,7 @@ const Nav: React.FC = () => {
         Steam
       </StyledLink>
 
-      <StyledLink exact activeClassName="active" to="/docs">Docs</StyledLink> 
-
-      {/* <StyledLink exact activeClassName="active" to="/pool">Pool</StyledLink>
-      <StyledLink exact activeClassName="active" to="/govern">Govern</StyledLink>
-      */}
-      {/* <StyledLink exact activeClassName="active" to="/bonds">Blog</StyledLink>
-      <StyledLink exact activeClassName="active" to="/boardroom">Govern</StyledLink> */}
-      {/* <StyledLink2 href="https://snapshot.page/#/basiscash.eth" target="_blank" >Vote</StyledLink2> */}
+      <StyledLink exact activeClassName="active" to="/docs">Docs</StyledLink>       
     </StyledNav>
   )
 }
@@ -46,29 +39,29 @@ const StyledNav = styled.nav`
 `
 
 const StyledLink = styled(NavLink)`
-  color: ${props => props.theme.color.grey[600]};
+  color: ${props => props.theme.color.blue[500]};
   font-weight: 700;
   padding-left: ${props => props.theme.spacing[3]}px;
   padding-right: ${props => props.theme.spacing[3]}px;
   text-decoration: none;
   &:hover {
-    color: ${props => props.theme.color.grey[700]};
+    color: ${props => props.theme.color.blue[500]};
   }
   &.active {
-    color: ${props => props.theme.color.primary.main};
+    color: ${props => props.theme.color.purple[200]};
   }
 `
 const StyledLink2 = styled.a`
-  color: ${props => props.theme.color.grey[600]};
+  color: ${props => props.theme.color.blue[500]};
   font-weight: 700;
   padding-left: ${props => props.theme.spacing[3]}px;
   padding-right: ${props => props.theme.spacing[3]}px;
   text-decoration: none;
   &:hover {
-    color: ${props => props.theme.color.grey[700]};
+    color: ${props => props.theme.color.blue[500]};
   }
   &.active {
-    color: ${props => props.theme.color.primary.main};
+    color: ${props => props.theme.color.purple[200]};
   }
 `
 

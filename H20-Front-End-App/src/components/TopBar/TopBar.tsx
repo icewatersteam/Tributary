@@ -31,7 +31,18 @@ const TopBar: React.FC = () => {
   )
 }
 
-const StyledTopBar = styled.div``
+const StyledTopBar = styled.div`
+  color: ${(props) => props.theme.color.white};
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);  
+  -webkit-backdrop-filter: blur(5px);
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  z-index: 2;
+`
 
 const StyledTopBarInner = styled.div`
   align-items: center;

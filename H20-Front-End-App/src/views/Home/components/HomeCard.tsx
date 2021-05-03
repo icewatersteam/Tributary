@@ -10,12 +10,14 @@ import { commify } from 'ethers/lib/utils';
 import config from '../../../config';
 import CardStats from './CardStats';
 
+
 interface HomeCardProps {
   title: string;
   symbol: string;  
   supply: number;
   apy: number;
   description?: string;  
+  to: string;
 }
 
 const HomeCard: React.FC<HomeCardProps> = ({
@@ -24,6 +26,7 @@ const HomeCard: React.FC<HomeCardProps> = ({
   supply,
   apy,
   description,   
+  to,
 }) => {  
 
   const onBuy = () => {
@@ -56,15 +59,19 @@ const HomeCard: React.FC<HomeCardProps> = ({
 
       <Spacer size="sm" />
       <Button
-        onClick={onBuy}
+        // onClick={onBuy}
         size="sm"
         text={"Buy " + title}
+        variant="tertiary"
+        to={to + `/bid`}
         /> 
       <Spacer size="sm" />
       <Button
-        onClick={onSell}
+        // onClick={onSell}
         size="sm"
         text={"Sell " + title}
+        variant="tertiary"
+        to={to + `/ask`}
         />           
     </Wrapper>
   );
@@ -74,18 +81,25 @@ const Wrapper = styled.div`
   flex: 1;
   margin: 2px;
   padding: 10px;
-  min-width: 200px;
-  background-color: ${(props) => props.theme.color.white};
+  min-width: 200px;  
   padding: ${(props) => props.theme.spacing[3]}px;
-  color: ${(props) => props.theme.color.grey[700]};
-  border-radius: 5px;
+  color: ${(props) => props.theme.color.white};
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px); 
+  -webkit-backdrop-filter: blur(5px); 
   @media (max-width: 768px) {
     margin: 10px 0px 0px 0px;
   }
 `;
 
 const CardHeader = styled.h2`
-  color: ${(props) => props.theme.color.grey[900]};
+color: ${(props) => props.theme.color.white};
   text-align: center;  
 `;
 
@@ -93,12 +107,10 @@ const TokenSymbolWrap = styled.div`
   text-align: center;
 `;
 
-const StyledSpacer = styled.hr`  
-  border-top: 1px solid ${(props) => props.theme.color.grey[400]};
-  border-bottom: 1px solid ${(props) => props.theme.color.grey[100]};
-  border-left: 0;
-  border-right: 0;
-  height: 0px;  
+const StyledSpacer = styled.hr`    
+  border:0;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.2);  
   margin: 30px 0px;
 `
 

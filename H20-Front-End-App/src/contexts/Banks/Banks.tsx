@@ -8,6 +8,7 @@ const Banks: React.FC = ({ children }) => {
   const [banks, setBanks] = useState<Bank[]>([]);
   const iceWater = useIceWater();
 
+  /*
   const fetchPools = useCallback(async () => {
     const banks: Bank[] = [];
 
@@ -16,10 +17,10 @@ const Banks: React.FC = ({ children }) => {
         if (!iceWater.isUnlocked) continue;
 
         // only show pools staked by user
-        const balance = await iceWater.stakedBalanceOnBank(bankInfo.contract, iceWater.myAccount);
-        if (balance.lte(0)) {
-          continue;
-        }
+        // const balance = await iceWater.stakedBalanceOnBank(bankInfo.contract, iceWater.myAccount);
+        // if (balance.lte(0)) {
+        //   continue;
+        // }
       }
       banks.push({
         ...bankInfo,
@@ -38,6 +39,7 @@ const Banks: React.FC = ({ children }) => {
         .catch(err => console.error(`Failed to fetch pools: ${err.stack}`));
     }
   }, [iceWater, iceWater?.isUnlocked, fetchPools]);
+  */
 
   return <Context.Provider value={{ banks }}>{children}</Context.Provider>;
 };

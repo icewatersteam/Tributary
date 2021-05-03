@@ -5,22 +5,25 @@ export const green = {
   500: '#00D110',
 }
 
-export const purple = {
-  200: '#bd7cfe',
-  400: '#ab47bc',
-  700: '#7b1fa2',
+export const purple = {  
+  200: '#D655A9',
+  300: '#8277af',
+  400: '#656CCC',
+  700: '#614ead',
 }
 
 export const blue = {
+  100: '#79b8ed',
   200: '#71ADE0',
   400: '#5496cd',
+  500: '#0a6997',
   600: '#357ab4',
 }
 
 export const red = {
-  100: '#C1C1FF',
-  200: '#7575FF',
-  500: '#9090FF',
+  100: '#e82222',
+  200: '#bf2222',
+  500: '#7d1414',
 }
 
 export const grey = {

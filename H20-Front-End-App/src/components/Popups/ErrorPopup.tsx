@@ -30,9 +30,9 @@ export default function ErrorPopup({ message, stack }: { message: string; stack:
 
 const StyledPopupDesc = styled.span`
   font-weight: 500;
-  color: ${(props) => props.theme.color.grey[300]};
+  color: ${(props) => props.theme.color.grey[900]};
 `;
 
 const StyledLink = styled.a`
-  color: ${(props) => props.theme.color.grey[500]};
+  color: ${(props) => props.theme.color.grey[800]};
 `;

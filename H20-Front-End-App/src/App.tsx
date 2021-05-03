@@ -21,6 +21,8 @@ import Popups from './components/Popups';
 import { createBundle } from 'typescript';
 
 const App: React.FC = () => {
+
+  
   return (
     <Providers>
       <Router>

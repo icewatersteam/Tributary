@@ -9,12 +9,35 @@ import { OverviewData } from './types';
 import useIceWater from '../../hooks/useIceWater';
 import config from '../../config';
 import Notice from '../../components/Notice';
+import useiceWater from '../../hooks/useIceWater';
+
+interface iceWaterData {  
+  iceSupply?: number,
+  steamSupply?: number
+}
 
 const Home: React.FC = () => {
+  
+  const iceWater = useiceWater();
+
+  const [{ iceSupply, steamSupply }, setIceWaterData] = useState<iceWaterData>({});
+  const fetchIceWaterData= useCallback(async () => {
+    const [iceSupply, steamSupply] = await Promise.all([
+      iceWater.getIceSupply(),
+      iceWater.getSteamSupply()
+    ]);        
+
+    setIceWaterData({ iceSupply, steamSupply });    
+  }, [iceWater, setIceWaterData]);
+
+  useEffect(() => {
+    if (iceWater) {
+      fetchIceWaterData().catch((err) => console.error(err.stack));
+    }
+  }, [iceWater]); 
 
   return (
-    <Page>
-
+    <Page className="ice">
       <ResponsiveWrap>
         <PageHeader     
           subtitle="Long-term bonds with long-term people."
@@ -40,28 +63,33 @@ const Home: React.FC = () => {
             <HomeCard
               title="Ice"
               symbol="ICE"
-              supply={57755040}
-              apy={11758.98}
+              to='/ice'
+              supply={iceSupply}
+              apy={0}
               description="Similar to a bond that never expires unless sold. It distributes a constant amount of H20 every day."          
             />
             <Spacer size="md" />
             <HomeCard
               title="Steam"
-              symbol="STEAM"          
-              supply={491755}
-              apy={188.71}
+              symbol="STEAM"  
+              to='/steam'        
+              supply={steamSupply}
+              apy={0}
               description="Similar to a share in that new H20 will be minted when demand increases and distributed to Steam holders."          
             />
           </HomeCards>
         </CardWrapper>
       </ResponsiveWrap>
+
+      
+
     </Page>
   );
 };
 
 const ResponsiveWrap = styled.div`
   width: 100%;
-  max-width: 800px;  
+  max-width: 800px;    
 `;
 
 

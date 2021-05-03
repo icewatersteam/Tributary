@@ -6,15 +6,23 @@ import { BigNumber } from 'ethers';
 
 /*
 IceWater provider urls
+Previous:??
 https://mainnet.infura.io/v3/cd881903650a43458fb57aaeaec7af36
 https://ropsten.infura.io/v3/cd881903650a43458fb57aaeaec7af36
+
+New??
+https://ropsten.infura.io/v3/519cfb2fa8a648c78ea4687a0300726b
+
+Prevous working Contract Address:
+0x16bC89980A8609DFF4081b8B51dfa38f5A48ca17
 */
 
 const configurations: { [env: string]: Configuration } = {
   development: {
-    chainId: ChainId.MAINNET,
+    chainId: ChainId.ROPSTEN,
     etherscanUrl: 'https://etherscan.io',
-    defaultProvider: 'https://mainnet.infura.io/v3/cd881903650a43458fb57aaeaec7af36',
+    defaultProvider: 'https://ropsten.infura.io/v3/519cfb2fa8a648c78ea4687a0300726b',
+    contractAddress: '0x118f1F2973A1357241153F4864BdaBD5ed2e67ef',
     deployments: require('./ice-water/deployments/deployments.mainnet.json'),
     externalTokens: {
       DAI: ['0x6B175474E89094C44Da98b954EedeAC495271d0F', 18],
@@ -32,9 +40,10 @@ const configurations: { [env: string]: Configuration } = {
     gasLimitMultiplier: 1.1,
   },
   production: {
-    chainId: ChainId.MAINNET,
+    chainId: ChainId.ROPSTEN,
     etherscanUrl: 'https://etherscan.io',
-    defaultProvider: 'https://mainnet.infura.io/v3/cd881903650a43458fb57aaeaec7af36',
+    defaultProvider: 'https://ropsten.infura.io/v3/519cfb2fa8a648c78ea4687a0300726b',
+    contractAddress: '0x118f1F2973A1357241153F4864BdaBD5ed2e67ef',
     deployments: require('./ice-water/deployments/deployments.mainnet.json'),
     externalTokens: {
       DAI: ['0x6B175474E89094C44Da98b954EedeAC495271d0F', 18],

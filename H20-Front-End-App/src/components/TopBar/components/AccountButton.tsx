@@ -1,44 +1,39 @@
 import React from 'react';
 import styled from 'styled-components';
-
 import { useWallet } from 'use-wallet';
-
 import useModal from '../../../hooks/useModal';
-
 import Button from '../../Button';
-
 import AccountModal from './AccountModal';
+import useiceWater from '../../../hooks/useIceWater';
+import Web3 from 'web3';
+import { ethers } from 'ethers';
 
 interface AccountButtonProps {}
 
 const AccountButton: React.FC<AccountButtonProps> = (props) => {
-  const [onPresentAccountModal] = useModal(<AccountModal />)
-  
-  // possibly "account" & "connect" are attr/fns from useWallet()
-  const { account, connect } = useWallet()
+  const iceWater = useiceWater();
 
-  // Console help
-  // const wallet = useWallet()
-  // console.log(wallet)
-  // console.log(wallet.getBlockNumber())
+  const [onPresentAccountModal] = useModal(<AccountModal />)  
+  
+  const { account, status, connect } = useWallet()
 
   return (
     <StyledAccountButton>
-      {!account ? (
-        <Button
-          onClick={() => connect('injected')}
-          size="sm"
-          text="Connect Wallet"
-        />
-      ) : (
-        <Button
-          onClick={onPresentAccountModal}
-          size="sm"
-          text="My Wallet"
-        />
-      )}
-
-      
+          {!account ? (
+          <Button
+            onClick={() => connect('injected')}           
+            size="sm"
+            text="Connect Wallet"
+            variant="secondary"
+          />
+        ) : (
+          null
+          // <Button
+          //   onClick={onPresentAccountModal}
+          //   size="sm"
+          //   text="My Wallet"
+          // />
+        )}         
     </StyledAccountButton>
   )
 }

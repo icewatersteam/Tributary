@@ -13,6 +13,7 @@ import TokenSymbol from '../../TokenSymbol';
 const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
   const iceWater = useiceWater();
 
+  /*
   const bacBalance = useTokenBalance(iceWater.BAC);
   const displayBacBalance = useMemo(() => getDisplayBalance(bacBalance), [bacBalance]);
 
@@ -21,6 +22,11 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
 
   const babBalance = useTokenBalance(iceWater.BAB);
   const displayBabBalance = useMemo(() => getDisplayBalance(babBalance), [babBalance]);
+  */
+ 
+  let h2oValue = 123;
+  let iceValue = 456;
+  let steamValue = 789;
 
   return (
     <Modal>
@@ -28,26 +34,26 @@ const AccountModal: React.FC<ModalProps> = ({ onDismiss }) => {
 
       <Balances>
         <StyledBalanceWrapper>
-          <TokenSymbol symbol="BAC" />
+          <TokenSymbol symbol="H2O" />
           <StyledBalance>
-            <StyledValue>{displayBacBalance}</StyledValue>
-            <Label text="BAC Available" />
+            <StyledValue>{h2oValue}</StyledValue>
+            <Label text="H2O" />
           </StyledBalance>
         </StyledBalanceWrapper>
 
         <StyledBalanceWrapper>
-          <TokenSymbol symbol="BAS" />
+          <TokenSymbol symbol="ICE" />
           <StyledBalance>
-            <StyledValue>{displayBasBalance}</StyledValue>
-            <Label text="BAS Available" />
+            <StyledValue>{iceValue}</StyledValue>
+            <Label text="Ice" />
           </StyledBalance>
         </StyledBalanceWrapper>
 
         <StyledBalanceWrapper>
-          <TokenSymbol symbol="BAB" />
+          <TokenSymbol symbol="STEAM" />
           <StyledBalance>
-            <StyledValue>{displayBabBalance}</StyledValue>
-            <Label text="BAB Available" />
+            <StyledValue>{steamValue}</StyledValue>
+            <Label text="Steam" />
           </StyledBalance>
         </StyledBalanceWrapper>
       </Balances>

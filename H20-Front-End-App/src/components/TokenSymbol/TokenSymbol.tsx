@@ -1,9 +1,14 @@
 import React from 'react';
 
+import h20Logo from '../../assets/logos/Water_Alone.png';
+import steamLogo from '../../assets/logos/Steam_Alone.png';
+import iceLogo from '../../assets/logos/Ice_Alone.png';
 
-import h20Logo from '../../assets/img/icewater-h20-logo.svg';
-import steamLogo from '../../assets/img/icewater-steam-logo.svg';
-import iceLogo from '../../assets/img/icewater-ice-logo.svg';
+/*
+import h20Logo from '../../assets/img/Water_Full_Color.png';
+import steamLogo from '../../assets/img/Steam_Full_Color.png';
+import iceLogo from '../../assets/img/Ice_Full_Color.png';
+*/
 
 const logosBySymbol: {[title: string]: string} = {
   'H20': h20Logo,
@@ -11,14 +16,14 @@ const logosBySymbol: {[title: string]: string} = {
   'ICE': iceLogo  
 };
 
-type BasisLogoProps = {
+type IceWaterLogoProps = {
   symbol: string;
   size?: number;
 }
 
-const TokenSymbol: React.FC<BasisLogoProps> = ({ symbol, size = 64 }) => {
+const TokenSymbol: React.FC<IceWaterLogoProps> = ({ symbol, size = 64 }) => {
   if (!logosBySymbol[symbol]) {
-    throw new Error(`Invalid BasisLogo symbol: ${symbol}`);
+    throw new Error(`Invalid IceWater symbol: ${symbol}`);
   }
   return (
     <img

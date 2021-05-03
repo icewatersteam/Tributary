@@ -1,5 +1,6 @@
 body {
   background: #eeeeee;
+  /* background: linear-gradient(180deg,#34b291,#0a6997 50%,#432b7c); */
   margin: 0;
   font-family: 'Nunito', sans-serif;
   font-size: 16px;
@@ -21,24 +22,41 @@ div.cardTabs a.cardTab {
   display: block;
   flex: 1;
   padding: 20px;
-  background: #e5e5e5;
+  background: rgba(255, 255, 255, 0.1);
   text-decoration: none;
   font-weight: bold;
-  color: #333;
-  -webkit-border-top-left-radius: 5px;
+  color: rgba(255, 255, 255, 0.8);
+  /* -webkit-border-top-left-radius: 5px;
   -webkit-border-top-right-radius: 5px;
   -moz-border-radius-topleft: 5px;
   -moz-border-radius-topright: 5px;
   border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-top-right-radius: 5px; */
   text-align: center;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 
 div.cardTabs .cardTabInit:not(.cardTabActive) {
-  background: #ffffff;
+  /* background: #ffffff; */  
+  /* border-bottom: 5px solid #fff; */
+  position: relative;  
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 0 !important;
+  color: #fff;
+  background: none;
 }
 
 div.cardTabs a.cardTabActive {
-  background: #ffffff;
+  /* background: #ffffff; */
+  position: relative;
+  /* border-bottom: 5px solid #fff; */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 0 !important;
+  color: #fff;
+  background: none;
 }

@@ -1,17 +1,48 @@
-import React from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components'
 import TokenSymbol from '../../components/TokenSymbol';
 import Spacer from '../../components/Spacer';
+import useIceWater from '../../hooks/useIceWater';
+import { BalanceData } from '../../ice-water/types';
+import { useWallet } from 'use-wallet';
+import numeral from 'numeral'
 
 interface PageHeaderProps {  
   subtitle?: string,
   title?: string,
   symbol?: string,
+  background?: 'white' | 'gradient',
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ subtitle, title, symbol }) => {  
+interface BalancesData {  
+  water?: BalanceData,
+  ice?: BalanceData,
+  steam?: BalanceData,
+}
+
+const PageHeader: React.FC<PageHeaderProps> = ({ subtitle, title, symbol, background = "gradient" }) => {  
+  const iceWater = useIceWater();
+  const { account, status } = useWallet()
+
+  const [{ water, ice, steam }, setBalances] = useState<BalancesData>({});
+
+  const fetchBalances = useCallback(async () => {
+    const [water, ice, steam] = await Promise.all([
+      iceWater.getBalanceOfWater(),
+      iceWater.getBalanceOfIce(),
+      iceWater.getBalanceOfSteam(),
+    ]);    
+    setBalances({ water, ice, steam });
+  }, [iceWater, setBalances]);
+
+  useEffect(() => {
+    if (iceWater) {
+      fetchBalances().catch((err) => console.error(err.stack));
+    }
+  }, [iceWater, status]);  
+
   return (
-    <PageHeaderContent>        
+    <PageHeaderContent className={background}>        
 
       <StyledPageHeader>   
         { symbol ? (
@@ -23,8 +54,16 @@ const PageHeader: React.FC<PageHeaderProps> = ({ subtitle, title, symbol }) => {
           </div>          
         ) : ( null ) }
 
-        {title ? (
+        {title && symbol ? (
           <div>
+            <StyledTitle>{title}</StyledTitle>
+            <Spacer size="sm" />
+          </div>          
+        ) : ( null )}
+
+        {title && !symbol ? (          
+          <div>
+            <Spacer size="lg" />
             <StyledTitle>{title}</StyledTitle>
             <Spacer size="sm" />
           </div>          
@@ -39,65 +78,127 @@ const PageHeader: React.FC<PageHeaderProps> = ({ subtitle, title, symbol }) => {
 
       </StyledPageHeader>
 
-      <Card>
-        <AccountBalancesCardLabel>
-          Your Balances
-        </AccountBalancesCardLabel>
 
-        <AccountBalances>
-          
-          <AccountBalance>
-            <AccountBalanceLabel>
-              H20:
-            </AccountBalanceLabel>
-            <AccountBalanceValue>
-              0.000
-            </AccountBalanceValue>
-          </AccountBalance>
+      {account ? (
+          <div className="card">
+          <AccountBalancesCardLabel>
+            Your Balances
+          </AccountBalancesCardLabel>
+  
+          <AccountBalances>
+            
+            <AccountBalance>
+              <AccountBalanceLabel>
+                H20:
+              </AccountBalanceLabel>
+              <AccountBalanceValue>
+                { water && water.amount != null ? (
+                  <span>{numeral(water.amount).format('0,0')}</span>
+                ) : ( 
+                  <span>
+                    -
+                  </span>
+                )}
+              </AccountBalanceValue>
+            </AccountBalance>
+  
+            <AccountBalance>
+              <AccountBalanceLabel>
+                Ice:
+              </AccountBalanceLabel>
+              <AccountBalanceValue>
+                { ice && ice.amount != null ? (
+                  <span>{numeral(ice.amount).format('0,0')}</span>
+                ) : ( 
+                  <span>
+                    -
+                  </span>
+                )}
+              </AccountBalanceValue>
+            </AccountBalance>
+  
+            <AccountBalance>
+              <AccountBalanceLabel>
+                Steam:
+              </AccountBalanceLabel>
+              <AccountBalanceValue>
+                { steam && steam.amount != null ? (
+                  <span>{numeral(steam.amount).format('0,0')}</span>
+                ) : ( 
+                  <span>
+                    -
+                  </span>
+                )}
+              </AccountBalanceValue>
+            </AccountBalance>
+          </AccountBalances>
+        </div>
+      ) : (
+        null
+      )}      
 
-          <AccountBalance>
-            <AccountBalanceLabel>
-              Ice:
-            </AccountBalanceLabel>
-            <AccountBalanceValue>
-              0.00
-            </AccountBalanceValue>
-          </AccountBalance>
-
-          <AccountBalance>
-            <AccountBalanceLabel>
-              Steam:
-            </AccountBalanceLabel>
-            <AccountBalanceValue>
-              0.00
-            </AccountBalanceValue>
-          </AccountBalance>
-        </AccountBalances>
-      </Card>
+      
     </PageHeaderContent>
   )
 }
 
 const PageHeaderContent = styled.div `
+  color: ${(props) => props.theme.color.grey[800]};
 
+  div.card {
+    padding: ${(props) => props.theme.spacing[3]}px;  
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;    
+    background-color: ${(props) => props.theme.color.white};    
+  }
+  
+
+  &.gradient {    
+    color: ${(props) => props.theme.color.white};
+    div.card {
+      box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);  
+      -webkit-backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.1);    
+    }
+  }  
 `;
 
-const Card = styled.div`  
-  padding: ${(props) => props.theme.spacing[3]}px;
-  color: ${(props) => props.theme.color.grey[700]};
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  background-color: ${(props) => props.theme.color.white};
-`;
+
+
+// const Card = styled.div`  
+//   padding: ${(props) => props.theme.spacing[3]}px;
+  
+//   -webkit-border-radius: 15px;
+//   -moz-border-radius: 15px;
+//   border-radius: 15px;
+//   background-color: rgba(255, 255, 255, 0.1);
+//   box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+//   border-top: 1px solid rgba(255, 255, 255, 0.2);
+//   border-left: 1px solid rgba(255, 255, 255, 0.2);
+//   backdrop-filter: blur(5px);  
+//   -webkit-backdrop-filter: blur(5px);
+// `;
+
+// const Card = styled.div`  
+//   padding: ${(props) => props.theme.spacing[3]}px;
+//   color: ${(props) => props.theme.color.grey[700]};
+//   -webkit-border-bottom-right-radius: 5px;
+//   -webkit-border-bottom-left-radius: 5px;
+//   -moz-border-radius-bottomright: 5px;
+//   -moz-border-radius-bottomleft: 5px;
+//   border-bottom-right-radius: 5px;
+//   border-bottom-left-radius: 5px;
+//   background-color: ${(props) => props.theme.color.white};
+// `;
 
 
 const TokenSymbolWrap = styled.div`  
+  margin-top: 25px;
   text-align: center;
-  margin-bottom: 15px;
 `;
 
 const AccountBalances = styled.div`  
@@ -151,16 +252,14 @@ const StyledPageHeader = styled.div`
 //   width: 96px;
 // `
 
-const StyledTitle = styled.h1`
-  color: ${props => props.theme.color.grey[900]};
-  font-size: 36px;
+const StyledTitle = styled.h1`  
+  font-size: 48px;
   font-weight: 700;
-  margin: 0;
-  padding: 0;
+  margin: 0px 0px 0px 0px;
+  padding: 0;  
 `
 
 const StyledSubtitle = styled.h3`
-  color: ${props => props.theme.color.grey[700]};
   font-size: 18px;
   font-weight: 400;
   margin: 0;

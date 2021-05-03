@@ -66,7 +66,7 @@ const StyledLabel = styled.div`
 `
 
 const StyledValue = styled.div`
-  color: ${props => props.theme.color.grey[600]};  
+color: ${(props) => props.theme.color.white};
   font-weight: 700;
   text-align: right;
   width: 150px;

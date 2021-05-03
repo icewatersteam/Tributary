@@ -15,6 +15,8 @@ interface SimpleModalProps {
 
 const SimpleModal: React.FC<ModalProps> = ({ onDismiss }) => {
 
+  console.log('here')
+
   const dismissSimpleModal = () : void => {
     console.log("dismissed!")
   }

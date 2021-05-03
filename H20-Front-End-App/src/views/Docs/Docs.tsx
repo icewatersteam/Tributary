@@ -22,6 +22,7 @@ const Docs: React.FC = () => {
       <PageHeader        
         subtitle="The Documentation Station"
         title="Documentation"
+        background="white"
       />
       <Spacer size="md" />    
 

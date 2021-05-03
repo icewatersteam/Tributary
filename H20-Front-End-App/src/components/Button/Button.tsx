@@ -11,6 +11,7 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg',
   text?: string,
   to?: string,
+  type?: 'button' | 'submit' | 'reset',
   variant?: 'default' | 'secondary' | 'tertiary'
 }
 
@@ -22,6 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   size,
   text,
   to,
+  type='button',
   variant,
 }) => {
   const { color, spacing } = useContext(ThemeContext)
@@ -36,7 +38,7 @@ const Button: React.FC<ButtonProps> = ({
       buttonColor = color.primary.main
   }
 
-  let boxShadow: string
+  let boxShadow: string = ""
   let buttonSize: number
   let buttonPadding: number
   let fontSize: number
@@ -70,13 +72,14 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <StyledButton
-      boxShadow={boxShadow}
-      color={buttonColor}
+      boxShadow={boxShadow}      
       disabled={disabled}
       fontSize={fontSize}
       onClick={onClick}
       padding={buttonPadding}
       size={buttonSize}
+      type={type}
+      className={variant}
     >
       {children}
       {ButtonChild}
@@ -85,8 +88,7 @@ const Button: React.FC<ButtonProps> = ({
 }
 
 interface StyledButtonProps {
-  boxShadow: string,
-  color: string,
+  boxShadow: string,  
   disabled?: boolean,
   fontSize: number,
   padding: number,
@@ -110,10 +112,37 @@ const StyledButton = styled.button<StyledButtonProps>`
   padding-left: ${props => props.padding}px;
   padding-right: ${props => props.padding}px;
   pointer-events: ${props => !props.disabled ? undefined : 'none'};
-  width: 100%;
+  width: 100%;  
   &:hover {
-    background-color: ${props => props.color};
+    background-color: ${props => props.theme.color.blue[100]};
     color: ${props => props.theme.color.white};
+  }
+
+  &.secondary {
+    background: #D655A9;
+    background: -webkit-linear-gradient(top left, #D655A9, #656CCC);
+    background: -moz-linear-gradient(top left, #D655A9, #656CCC);
+    background: linear-gradient(to bottom right, #D655A9, #656CCC);
+  }
+  &.secondary:hover {
+    background: #E653B2;
+    background: -webkit-linear-gradient(top left, #E653B2, #6871E6);
+    background: -moz-linear-gradient(top left, #E653B2, #6871E6);
+    background: linear-gradient(to bottom right, #E653B2, #6871E6);
+  }
+
+  &.tertiary {
+    background-color: rgba(255, 255, 255, 0.1);  
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 0;
+    border-right: 0;
+    backdrop-filter: blur(5px);   
+    -webkit-backdrop-filter: blur(5px);
+  }
+  &.tertiary:hover {    
+    background-color: rgba(255, 255, 255, 0.2);
+    color: ${props => props.theme.color.white};    
   }
 `
 
