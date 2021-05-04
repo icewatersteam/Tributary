@@ -18,6 +18,7 @@ import useTransactionsModal from '../../hooks/useTransactionsModal';
 
 import { useTransactionAdder, useAllTransactions } from '../../state/transactions/hooks';
 
+
 interface onBidProps {
   price: number;
   amount: number;
@@ -122,11 +123,11 @@ const Tributary: React.FC = ({  }) => {
   }
 
   
-  const Bid = () => 
+  const Contribute = () => 
   <div>
     <Card>   
       <PriceAmountForm
-        title="Ice Bid"
+        title="Contribute"
         onSubmit={onBidSubmit}
       ></PriceAmountForm>      
     </Card>    
@@ -158,7 +159,7 @@ const Tributary: React.FC = ({  }) => {
     )}       
   </div>;
   
-  const Ask = () =>  
+  const Exchange = () =>  
   <div>
     <Card>   
       <PriceAmountForm
@@ -207,13 +208,25 @@ const Tributary: React.FC = ({  }) => {
 
           <MarketCard>
             <StyledInputLabel>Tributary Goal</StyledInputLabel>              
-            <MarketLastFilled>
+            <Goal>
             {goal} 
-            </MarketLastFilled>
+            <ProgressBar/>
+            </Goal>
           </MarketCard>
 
           <Spacer size="md" />
 
+          <MarketCard>
+            <Header>
+                Earn H2O
+            </Header>              
+            <StyledInputLabel>
+                Stake UST
+            </StyledInputLabel>  
+            
+          </MarketCard>
+
+          <Spacer size="md" />
 
           <TradeCardWrap>
             <TradeCard>
@@ -239,9 +252,9 @@ const Tributary: React.FC = ({  }) => {
             
               <Content>
                 <Switch>
-                  <Route path={`${path}`} exact component={Bid} />
-                  <Route path={`${path}/contribute`} component={Bid} />
-                  <Route path={`${path}/exchange`} component={Ask} />
+                  <Route path={`${path}`} exact component={Contribute} />
+                  <Route path={`${path}/contribute`} component={Contribute} />
+                  <Route path={`${path}/exchange`} component={Exchange} />
                 </Switch>
               </Content>
 
@@ -253,7 +266,19 @@ const Tributary: React.FC = ({  }) => {
   );
 };
 
+const Header = styled.div`
+font-size: 2rem;
+color: ${(props) => props.theme.color.white};
+`
 
+const ProgressBar = styled.div`
+  width: ${500000000/1000000000*100}%;
+  height: 1rem;
+  background-color: #FFFFFF;  
+  border-radius: 0.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem; 
+`;
 
 const pageStyle = styled.div`
   width: 100%;
@@ -291,8 +316,11 @@ const MarketCard = styled.div`
 //   background-color: ${(props) => props.theme.color.white};  
 // `;
 
-const MarketLastFilled = styled.div`  
-  font-size: 45px;
+const Icon = styled.div`
+  float: right;
+`
+const Goal = styled.div`  
+  font-size: 3rem;
   color: ${(props) => props.theme.color.white};
 `;
 
