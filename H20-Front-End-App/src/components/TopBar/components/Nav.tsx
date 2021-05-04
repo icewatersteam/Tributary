@@ -28,6 +28,15 @@ const Nav: React.FC = () => {
         Steam
       </StyledLink>
 
+      <StyledLink 
+        exact
+        activeClassName="active"
+        to="/tributary"
+        isActive={() => [`/tributary`, `/tributary/bid`, `/tributary/ask`].includes(pathname)}
+      >
+        Tributary
+      </StyledLink>
+
       <StyledLink exact activeClassName="active" to="/docs">Docs</StyledLink>       
     </StyledNav>
   )

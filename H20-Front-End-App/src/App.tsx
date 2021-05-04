@@ -12,6 +12,7 @@ import Home from './views/Home';
 import Pool from './views/Pool';
 import Ice from './views/Ice';
 import Steam from './views/Steam';
+import Tributary from './views/Tributary'
 
 import store from './state';
 import theme from './theme';
@@ -41,6 +42,9 @@ const App: React.FC = () => {
           </Route>
           <Route path="/pool">
             <Pool />
+          </Route>
+          <Route path="/tributary">
+            <Tributary />
           </Route>
         </Switch>
       </Router>
