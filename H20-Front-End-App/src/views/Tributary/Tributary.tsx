@@ -1,17 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, FormEventHandler, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
 import PageHeader from '../../components/PageHeader';
 import Button from '../../components/Button';
 import Spacer from '../../components/Spacer';
-import PriceAmountForm from '../../components/PriceAmountForm';
 import TokenSymbol from '../../components/TokenSymbol';
+import AccountButton from '../../components/TopBar/components/AccountButton'
 
 import { Switch, Route, NavLink, useLocation, Link } from "react-router-dom";
 import numeral from 'numeral';
 import useiceWater from '../../hooks/useIceWater';
 import { BidData, AskData } from '../../ice-water/types';
 import { useWallet } from 'use-wallet';
+import { useForm } from 'react-hook-form'
 
 import TxModal from '../../components/TopBar/components/TxModal';
 import useTransactionsModal from '../../hooks/useTransactionsModal';
@@ -19,14 +20,8 @@ import useTransactionsModal from '../../hooks/useTransactionsModal';
 import { useTransactionAdder, useAllTransactions } from '../../state/transactions/hooks';
 
 
-interface onBidProps {
-  price: number;
+interface onProps {
   amount: number;
-}
-
-interface onAskProps {
-  price: number,
-  amount: number,
 }
 
 interface iceBidAskData {  
@@ -37,7 +32,9 @@ interface iceBidAskData {
 
 const Tributary: React.FC = ({  }) => {
 
-    const [goal, setGoal] = useState('1 Billion')
+    const [goal, setGoal] = useState('1 Billion');
+    const [contribution, setContribution] = useState(0);
+    const [tributeTokens, setTributeTokens] = useState(999);
 
   const iceWater = useiceWater();
   const addTransaction = useTransactionAdder();
@@ -74,80 +71,89 @@ const Tributary: React.FC = ({  }) => {
     <TxModal showRecent={false} onDismiss={() => onDismissTransactionModal()} />,
   );
   
-  // Submit Ice Bid
-  const handleBidSubmit = useCallback(
-    async (price: number, amount: number) => {
-      const tx = await iceWater.sendIceBid(price, amount);      
-      //console.log('handleBidSubmit tx'); console.log(tx);
-      
-      addTransaction(tx, {
-        summary: `Ice Bid: Price ${price}, Amount ${amount}`,
-      });      
-
-      onPresentTransactionModal();
-
-      tx.wait().then(function(receipt) {
-        //console.log("transaction complete"); console.log(receipt);
-        fetchIceBidAsk().catch((err) => console.error(err.stack));    
-      });
-    },
-    [iceWater, addTransaction]
-  );
-  
-  const onBidSubmit = (data:onBidProps) => {    
-    handleBidSubmit(numeral(data.price).value(), numeral(data.amount).value())
-    return 
+  const handleContributeSubmit = () : FormEventHandler<HTMLFormElement> => {
+    alert("Handle Submit. Amount: " + contribution);
+    return
   }
 
-  // Sumbit Ice Ask
-  const handleAskSubmit = useCallback(
-    async (price: number, amount: number) => {
-      const tx = await iceWater.sendIceAsk(price, amount);           
-      
-      addTransaction(tx, {
-        summary: `Ice Ask: Price ${price}, Amount ${amount}`,
-      });      
-
-      onPresentTransactionModal();
-
-      tx.wait().then(function(receipt) {        
-        fetchIceBidAsk().catch((err) => console.error(err.stack));    
-      });
-    },
-    [iceWater, addTransaction]
-  );
-
-  const onAskSubmit = (data:onAskProps) => {
-    handleAskSubmit(numeral(data.price).value(), numeral(data.amount).value())    
-    return 
+  const handleExchangeSubmit = () : FormEventHandler<HTMLFormElement> => {
+    alert ("Handle Submit. Amount: " + tributeTokens);
+    return
   }
 
+ const handleChange = (e : ChangeEvent<HTMLInputElement>) : FormEventHandler<HTMLFormElement> => {    
+    setContribution(parseFloat(e.target.value));
+    return
+  }
   
   const Contribute = () => 
   <div>
     <Card>   
-      <PriceAmountForm
-        title="Contribute"
-        onSubmit={onBidSubmit}
-      ></PriceAmountForm>      
+       <Styles>
+        <form key="contributeform">
+            <div className="inputGrp">
+                <label>Contribution Amount</label>
+                <div className='inputWrap'>
+                    <input 
+                      autoFocus
+                      key="contribution"
+                      name="contribution" 
+                      value={contribution}
+                      onChange={(
+                        e: React.ChangeEvent<HTMLInputElement>,
+                    ): void => {
+                        setContribution(
+                            parseFloat(e.target.value),
+                        );
+                    }} 
+                        placeholder="0.00"                       
+                        type='number'
+                        //{...register("amount", { 
+                        //    required: true,
+                        //    pattern: /^-?[0-9]\d*\.?\d*$/                           
+                        //})}
+                    />
+                    <select name="curency" id="currency">
+                        <option value="UST">UST</option>
+                    </select>
+                </div>
+            </div>
+            <div className="inputGrp">
+                <label>Staked: <b>{contribution ? contribution : 0}</b> UST</label>
+                <label>H2O Amount to recieve: <b>{contribution ? (contribution / 1.24).toFixed(4) : 0}</b></label>
+            </div>    
+            
+            {account ? (        
+                <Button
+                type="submit"
+                size="sm"
+                text={"Submit Contribution"}
+                variant="tertiary"
+                onClick={handleContributeSubmit}
+                />  
+            ) : (
+                <AccountButton />
+            )}
+
+        </form>
+        </Styles>
     </Card>    
     
     {account ? (
       <Card>  
-        <h4>Your Current Bid</h4>
         <YourBidAsk>
           <YourBidAskColumn>
-            <StyledInputLabel>Price</StyledInputLabel>
+            <StyledInputLabel>Total UST staked</StyledInputLabel>
             { bid && bid.price != null ? (
-              <div>{numeral(bid.price).format('0,0')}</div>
+              <div>Import from records: {numeral(contribution).format('0,0')}</div>
             ) : (
               <div>-</div>
             )}             
           </YourBidAskColumn>
           <YourBidAskColumn>
-            <StyledInputLabel>Amount</StyledInputLabel>
+            <StyledInputLabel>Total H2O Earned</StyledInputLabel>
             { bid && bid.amount != null ? (
-              <div>{numeral(bid.amount).format('0,0')}</div>
+              <div> Import from records: {numeral(bid.amount).format('0,0')}</div>
             ) : (
               <div>-</div>
             )} 
@@ -162,27 +168,71 @@ const Tributary: React.FC = ({  }) => {
   const Exchange = () =>  
   <div>
     <Card>   
-      <PriceAmountForm
-        title="Ice Ask"
-        onSubmit={onAskSubmit}
-      ></PriceAmountForm>  
+      <Styles>
+      <form key="exchangeform">
+            <div className="inputGrp">
+                <label>Exchange Tribute Tokens back to UST</label>
+                <div className='inputWrap'>
+                    <input 
+                      autoFocus
+                      key="exchange"
+                      name="tributetokens" 
+                      value={tributeTokens}
+                      onChange={(
+                        e: React.ChangeEvent<HTMLInputElement>,
+                    ): void => {
+                        setTributeTokens(
+                            parseFloat(e.target.value),
+                        );
+                    }} 
+                        placeholder="0.00"                       
+                        type='number'
+                        //{...register("amount", { 
+                        //    required: true,
+                        //    pattern: /^-?[0-9]\d*\.?\d*$/                           
+                        //})}
+                    />
+                    <select name="curency" id="currency">
+                        <option value="TT">Tibute Tokens</option>
+                    </select>
+                </div>
+            </div>
+            <div className="inputGrp">
+                <label><b>{tributeTokens ? tributeTokens : 0} H2O and Tribute Tokens will be burned</b></label>
+                <label>UST Amount to recieve: <b>{tributeTokens ? (tributeTokens * 1.24).toFixed(4) : 0}</b></label>
+            </div>    
+            
+            {account ? (        
+                <Button
+                type="submit"
+                size="sm"
+                text={"Submit Exchange"}
+                variant="tertiary"
+                onClick={handleExchangeSubmit}
+                />  
+            ) : (
+                <AccountButton />
+            )}
+
+        </form>
+      </Styles>
     </Card>        
     {account ? (
       <Card>  
-        <h4>Your Current Ask</h4> 
+        <h4>Your Current Position</h4> 
         <YourBidAsk>
           <YourBidAskColumn>
-            <StyledInputLabel>Price</StyledInputLabel>
-            { ask && ask.price != null ? (
-              <div>{numeral(ask.price).format('0,0')}</div>
+            <StyledInputLabel>Tribute Tokens</StyledInputLabel>
+            { tributeTokens ? (
+              <div>{numeral(tributeTokens).format('0,0')}</div>
             ) : (
               <div>-</div>
             )} 
           </YourBidAskColumn>
           <YourBidAskColumn>
-            <StyledInputLabel>Amount</StyledInputLabel>
-            { ask && ask.amount != null ? (
-              <div>{numeral(ask.amount).format('0,0')}</div>
+            <StyledInputLabel>H2O Tokens</StyledInputLabel>
+            { "something" ? (
+              <div>{"{import H2O}"}</div>
             ) : (
               <div>-</div>
             )} 
@@ -207,21 +257,12 @@ const Tributary: React.FC = ({  }) => {
           <Spacer size="md" />   
 
           <MarketCard>
-            <StyledInputLabel>Tributary Goal</StyledInputLabel>              
-            <Goal>
-            {goal} 
-            <ProgressBar/>
-            </Goal>
-          </MarketCard>
-
-          <Spacer size="md" />
-
-          <MarketCard>
             <Header>
-                Earn H2O
-            </Header>              
+                Start Earning H2O
+            </Header> 
+            <br></br>             
             <StyledInputLabel>
-                Stake UST
+                Just stake UST
             </StyledInputLabel>  
             
           </MarketCard>
@@ -259,7 +300,23 @@ const Tributary: React.FC = ({  }) => {
               </Content>
 
             </TradeCard>
-          </TradeCardWrap>    
+          </TradeCardWrap>   
+
+          <Spacer size="md" /> 
+
+          <MarketCard>
+            <StyledInputLabel>Tributary Goal</StyledInputLabel>              
+            <Goal>
+            {goal} 
+            <ProgressBar/>
+            </Goal>
+            <StyledInputLabel>
+                We airdrop rewards to investers as we meet our goals.
+            </StyledInputLabel>  
+            <StyledInputLabel>
+              Last airdrop: {"{import data}"}
+            </StyledInputLabel>
+          </MarketCard>
 
       </ResponsiveWrap> 
     </Page>
@@ -316,9 +373,6 @@ const MarketCard = styled.div`
 //   background-color: ${(props) => props.theme.color.white};  
 // `;
 
-const Icon = styled.div`
-  float: right;
-`
 const Goal = styled.div`  
   font-size: 3rem;
   color: ${(props) => props.theme.color.white};
@@ -389,6 +443,74 @@ const StyledLink = styled.a`
 const StyledInputLabel = styled.h4`    
   margin: 0 0 10px 0;  
 `
+const Styles = styled.div`
+ div.inputGrp {
+    margin-bottom: 25px;
+ }
 
+ div.inputWrap {
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: ${props => props.theme.borderRadius}px;
+    display: flex;
+    padding: 0 ${props => props.theme.spacing[3]}px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+ }
+
+ select{
+    height: 42px;
+    font-size: 18px;
+    color: ${props => props.theme.color.white};
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: ${props => props.theme.borderRadius}px;
+    display: flex;
+    padding: 0 ${props => props.theme.spacing[3]}px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+ }
+
+ input {    
+    background: none;
+    border: 0;
+    color: ${props => props.theme.color.white};
+    font-size: 18px;
+    flex: 1;
+    height: 56px;
+    margin: 0;
+    padding: 0;
+    outline: none;
+ }
+
+ input::placeholder {
+     color: rgba(255, 255, 255, 0.5);
+ }
+
+ 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+ label {
+   display: block;
+   font-weight: bold;
+   margin: 0px 0px 10px 3px;
+ }
+
+ .error {
+   color: ${props => props.theme.color.red[100]};      
+   margin: 10px 0px 0px 3px;
+ }
+`;
 
 export default Tributary;
