@@ -93,6 +93,12 @@ const Tributary: React.FC = ({  }) => {
         <form key="contributeform">
             <div className="inputGrp">
                 <label>Contribution Amount</label>
+                  <select name="project" id="project" style={{width: '100%'}}>
+                          <option value="1">Project 1</option>
+                          <option value="2">Project 2</option>
+                          <option value="3">Project 3</option>
+                  </select>
+                  <Spacer></Spacer>
                 <div className='inputWrap'>
                     <input 
                       autoFocus
@@ -262,7 +268,9 @@ const Tributary: React.FC = ({  }) => {
             </Header> 
             <br></br>             
             <StyledInputLabel>
-                Just stake UST
+                We want to reward early adopters of our project.
+                <br></br> 
+                Just stake UST to contribute to the project and you will recieve kickbacks as we reach our goals!
             </StyledInputLabel>  
             
           </MarketCard>
