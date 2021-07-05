@@ -13,6 +13,8 @@ import Pool from './views/Pool';
 import Ice from './views/Ice';
 import Steam from './views/Steam';
 import Tributary from './views/Tributary'
+import Home2 from './views/Home2'
+import About from './views/About'
 
 import store from './state';
 import theme from './theme';
@@ -29,9 +31,12 @@ const App: React.FC = () => {
       <Router>
         <Switch>
           <Route path="/" exact>
-            <Home />
+            <Home2 />
           </Route>
-          <Route path="/docs">
+          <Route path="/about">
+            <About />
+          </Route>
+          {/* <Route path="/docs">
             <Docs />
           </Route>
           <Route path="/ice">
@@ -42,7 +47,7 @@ const App: React.FC = () => {
           </Route>
           <Route path="/pool">
             <Pool />
-          </Route>
+          </Route> */}
           <Route path="/tributary">
             <Tributary />
           </Route>

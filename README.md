@@ -1,15 +1,15 @@
 ![Ice Water Title Image](https://app.icewater.money/icewater_color.svg)
 
-# Ice Water Interfaces
+# Tributary Front End Interfaces
 
-This is front-end repository for [Ice Water](https://icewater.money).
+This is front-end repository for [Tributary](https://icewater.money).
 
-### H20-Front-End-Public
+### Home
 
-Public pages such as the home page.
+Front end interface for Tributary Home page
 
-### H20-Front-End-App
+### App
 
-App for connecting wallet and exchanging ice, water & steam.
+Front end interface for Tributary App
 
 ## LICENSE: MIT
