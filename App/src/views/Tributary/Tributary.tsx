@@ -199,7 +199,7 @@ const Tributary: React.FC = ({  }) => {
                         //})}
                     />
                     <select name="curency" id="currency">
-                        <option value="TT">Tibute Tokens</option>
+                        <option value="TT">Tribute Tokens</option>
                     </select>
                 </div>
             </div>
