@@ -1,128 +1,114 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, FormEventHandler, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
 import PageHeader from '../../components/PageHeader';
+import Button from '../../components/Button';
 import Spacer from '../../components/Spacer';
-import HomeCard from './components/HomeCard';
-import H20Card from './components/H20Card';
-import { OverviewData } from './types';
-import useIceWater from '../../hooks/useIceWater';
-import config from '../../config';
-import Notice from '../../components/Notice';
-import useiceWater from '../../hooks/useIceWater';
+import TokenSymbol from '../../components/TokenSymbol';
+import AccountButton from '../../components/TopBar/components/AccountButton'
+import LandingPage from './LandingPage';
+import deltaIcon from '../../assets/img/delta.png'
 
-interface iceWaterData {  
-  iceSupply?: number,
-  steamSupply?: number
-}
-
-const Home: React.FC = () => {
-  
-  const iceWater = useiceWater();
-
-  const [{ iceSupply, steamSupply }, setIceWaterData] = useState<iceWaterData>({});
-  const fetchIceWaterData= useCallback(async () => {
-    const [iceSupply, steamSupply] = await Promise.all([
-      iceWater.getIceSupply(),
-      iceWater.getSteamSupply()
-    ]);        
-
-    setIceWaterData({ iceSupply, steamSupply });    
-  }, [iceWater, setIceWaterData]);
-
-  useEffect(() => {
-    if (iceWater) {
-      fetchIceWaterData().catch((err) => console.error(err.stack));
-    }
-  }, [iceWater]); 
-
-  return (
-    <Page className="ice">
-      <ResponsiveWrap>
-        <PageHeader     
-          subtitle="Long-term bonds with long-term people."
-          title="Welcome to Ice Water!"
-        />
-        <Spacer size="md" />      
-        <CardWrapper>
-
-          <H20Card
-            title="H20 is in an Expansionary State"          
-          >
-          </H20Card>
-          <Spacer size="md" /> 
-
-          <HomeCards>
-            {/* <HomeCard
-              title="H20"
-              symbol="H20"          
-              description="The primary token in this protocol and should remain stable relative to itself"          
-            /> 
-            <Spacer size="lg" />
-            */}
-            <HomeCard
-              title="Ice"
-              symbol="ICE"
-              to='/ice'
-              supply={iceSupply}
-              apy={0}
-              description="Similar to a bond that never expires unless sold. It distributes a constant amount of H20 every day."          
-            />
-            <Spacer size="md" />
-            <HomeCard
-              title="Steam"
-              symbol="STEAM"  
-              to='/steam'        
-              supply={steamSupply}
-              apy={0}
-              description="Similar to a share in that new H20 will be minted when demand increases and distributed to Steam holders."          
-            />
-          </HomeCards>
-        </CardWrapper>
-      </ResponsiveWrap>
-
+const Home2: React.FC = () => {
+    return(
+<Page className="ice" >     
       
+      <ResponsiveWrap>    
+        
+        <StyledSpacer/>
+            <img
+                alt="..."
+                className="IconSvg"                        
+                // style={{ height: 65, position: 'relative', top: 15 }}
+                src={
+                    require('../../assets/img/delta.png')
+                    .default
+                }
+                />
+        <StyledSpacer/>
 
+        <Header><b>What is Tributary?</b></Header>
+        <StyledSpacer/>
+        <P>
+            Tributary is a new platform for fundraising using blockchain innovation!
+            Built on the back of a cool cryptocurrency called H2O, the smart contracts give people the chance to invest in the new cryptocurrency.
+            <StyledSpacer/>
+            A company can state a project to raise funds for and people invvest in the project by buying UST and staking it in the project. 
+            In return for staking UST people recieve H2O and Tribute tokens, which maintain their value over time. 
+            The company can then use the interest that accrues to fund the project while the people are recieving the occational kickback as the project reaches it's goals.
+            <StyledSpacer/>
+            Tributary is the best way to connect early investing and fundraising. 
+            Investors can contribute to a project and recieve kickbacks for their support. 
+            <StyledSpacer/>
+            <b>This is a great way to fund a project without the usual pains of sourcing capital.</b>
+            <StyledSpacer/>
+            
+        </P>
+
+      </ResponsiveWrap> 
     </Page>
   );
 };
 
+const P = styled.p`
+color: white;
+float: left;
+text-align: justify;
+font-size: 1.2rem;
+`
+
+const Header = styled.div`
+font-size: 3rem;
+color: ${(props) => props.theme.color.white};
+`
+
+const pageStyle = styled.div`
+  width: 100%;
+  max-width: 600px;  
+`;
+
 const ResponsiveWrap = styled.div`
   width: 100%;
-  max-width: 800px;    
-`;
-
-
-const StyledOverview = styled.div`
-  align-items: center;
-  display: flex;
-  @media (max-width: 768px) {
-    width: 100%;
-    flex-flow: column nowrap;
-    align-items: center;
-  }
-`;
-
-const CardWrapper = styled.div`
+  max-width: 50vw;    
+  text-align: center;
   
 `;
 
-const HomeCards = styled.div`
-  display: flex;
-  margin: 5px 0;
-  justify-content: center;
-  width: 100%;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    flex-flow: column nowrap;
-    align-items: center;
-  }
+const MarketCard = styled.div`  
+  padding: ${(props) => props.theme.spacing[3]}px;
+  color: ${(props) => props.theme.color.white};
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px); 
+  -webkit-backdrop-filter: blur(5px); 
 `;
 
-const StyledNoticeContainer = styled.div`
-  max-width: 768px;
-  width: 90vw;
+
+
+const TradeCardWrap = styled.div`  
+-webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+`;
+
+const Card = styled.div`  
+  padding: ${(props) => props.theme.spacing[3]}px;
+  color: ${(props) => props.theme.color.white};  
+`;
+
+const Content = styled.div`  
+
 `;
 
 const StyledSpacer = styled.div`
@@ -136,4 +122,9 @@ const StyledLink = styled.a`
   color: ${(props) => props.theme.color.primary.main};
 `;
 
-export default Home;
+
+const StyledInputLabel = styled.h4`    
+  margin: 0 0 10px 0;  
+`
+
+export default Home2;

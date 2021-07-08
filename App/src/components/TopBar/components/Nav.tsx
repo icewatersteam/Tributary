@@ -27,8 +27,6 @@ const Nav: React.FC = () => {
       >
         Steam
       </StyledLink> */}
-      <StyledLink exact activeClassName="active" to="/">Home</StyledLink>
-      <StyledLink2 target="_blank" href="https://icewater.money/">About H2O</StyledLink2>
       <StyledLink 
         exact
         activeClassName="active"
@@ -37,6 +35,8 @@ const Nav: React.FC = () => {
       >
         Tributary
       </StyledLink>
+      <StyledLink exact activeClassName="active" to="/about">About</StyledLink>
+      <StyledLink exact activeClassName="active" to="/projects">Projects</StyledLink>      
 
       {/* <StyledLink exact activeClassName="active" to="/docs">Docs</StyledLink>        */}
     </StyledNav>
@@ -49,26 +49,13 @@ const StyledNav = styled.nav`
 `
 
 const StyledLink = styled(NavLink)`
-  color: ${props => props.theme.color.blue[500]};
+  color: ${props => props.theme.color.purple[400]};
   font-weight: 700;
   padding-left: ${props => props.theme.spacing[3]}px;
   padding-right: ${props => props.theme.spacing[3]}px;
   text-decoration: none;
   &:hover {
-    color: ${props => props.theme.color.blue[500]};
-  }
-  &.active {
     color: ${props => props.theme.color.purple[200]};
-  }
-`
-const StyledLink2 = styled.a`
-  color: ${props => props.theme.color.blue[500]};
-  font-weight: 700;
-  padding-left: ${props => props.theme.spacing[3]}px;
-  padding-right: ${props => props.theme.spacing[3]}px;
-  text-decoration: none;
-  &:hover {
-    color: ${props => props.theme.color.blue[500]};
   }
   &.active {
     color: ${props => props.theme.color.purple[200]};

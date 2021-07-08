@@ -252,7 +252,7 @@ const Tributary: React.FC = ({  }) => {
   
   
   return (
-    <Page className="ice" >     
+    <Page>     
       
       <ResponsiveWrap>    
         <PageHeader        

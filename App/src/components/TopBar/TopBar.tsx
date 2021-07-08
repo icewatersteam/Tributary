@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react';
 import styled from 'styled-components'
-
+import { NavLink } from "react-router-dom"
 import Container from '../Container'
 import Logo from '../Logo'
 
@@ -8,7 +8,12 @@ import AccountButton from './components/AccountButton'
 import Nav from './components/Nav'
 import TxButton from './components/TxButton'
 
+import { AuthContext } from "../../contexts/Auth/AuthContext";
+
 const TopBar: React.FC = () => {
+
+  const user = useContext(AuthContext);
+
   return (
     <StyledTopBar>
       <Container size="lg">
@@ -22,8 +27,19 @@ const TopBar: React.FC = () => {
             display: 'flex',
             justifyContent: 'flex-end'
           }}>
-            <TxButton />
-            <AccountButton />
+            
+            { user ? (
+                <>
+                  <StyledLink exact className="signout" activeClassName="active" to="/signout">Sign Out</StyledLink>
+                  <AccountButton />
+                </>
+            ) : (
+                <>
+                  <StyledLink exact activeClassName="active" to="/signin">Sign In</StyledLink>
+                </>
+            )}
+          
+            
           </div>
         </StyledTopBarInner>
       </Container>
@@ -33,10 +49,8 @@ const TopBar: React.FC = () => {
 
 const StyledTopBar = styled.div`
   color: ${(props) => props.theme.color.white};
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);  
-  -webkit-backdrop-filter: blur(5px);
+  background-color: rgba(20, 20, 20, 1);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);  
   position: fixed;
   left: 0px;
   top: 0px;
@@ -52,6 +66,24 @@ const StyledTopBarInner = styled.div`
   max-width: ${props => props.theme.siteWidth}px;
   width: 100%;
   flex-wrap: wrap;
+`
+
+const StyledLink = styled(NavLink)`
+  color: ${props => props.theme.color.purple[400]};
+  font-weight: 700;
+  padding-left: ${props => props.theme.spacing[3]}px;
+  padding-right: ${props => props.theme.spacing[3]}px;
+  text-decoration: none;
+  &:hover {
+    color: ${props => props.theme.color.purple[300]};
+  }
+  &.active {
+    color: ${props => props.theme.color.purple[200]};
+  }
+  &.signout {
+    padding-top: 8px;
+    margin-right: 10px;
+  }
 `
 
 export default TopBar

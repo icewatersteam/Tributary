@@ -4,17 +4,13 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { UseWalletProvider } from 'use-wallet';
 
-import BanksProvider from './contexts/Banks';
 import IceWaterProvider from './contexts/IceWaterProvider';
 import ModalsProvider from './contexts/Modals';
-import Docs from './views/Docs';
-import Home from './views/Home';
-import Pool from './views/Pool';
-import Ice from './views/Ice';
-import Steam from './views/Steam';
 import Tributary from './views/Tributary'
-import Home2 from './views/Home2'
+import Login from './views/Login'
+import Home from './views/Home'
 import About from './views/About'
+import Projects from './views/Projects'
 
 import store from './state';
 import theme from './theme';
@@ -31,25 +27,22 @@ const App: React.FC = () => {
       <Router>
         <Switch>
           <Route path="/" exact>
-            <Home2 />
+            <About />
           </Route>
           <Route path="/about">
             <About />
-          </Route>
-          {/* <Route path="/docs">
-            <Docs />
-          </Route>
-          <Route path="/ice">
-            <Ice />
-          </Route>
-          <Route path="/steam">
-            <Steam />
-          </Route>
-          <Route path="/pool">
-            <Pool />
-          </Route> */}
+          </Route>         
           <Route path="/tributary">
             <Tributary />
+          </Route>
+          <Route path="/signin">
+            <Login />
+          </Route>
+          <Route path="/signout">
+            <Login />
+          </Route>
+          <Route path="/projects">
+            <Projects />
           </Route>
         </Switch>
       </Router>
@@ -64,13 +57,11 @@ const Providers: React.FC = ({ children }) => {
         <Provider store={store}>
           <Updaters />
           <IceWaterProvider>
-            <ModalsProvider>
-              <BanksProvider>
-                <>
-                  <Popups />
-                  {children}
-                </>
-              </BanksProvider>
+            <ModalsProvider>              
+              <>
+                <Popups />
+                {children}
+              </>              
             </ModalsProvider>
           </IceWaterProvider>
         </Provider>
