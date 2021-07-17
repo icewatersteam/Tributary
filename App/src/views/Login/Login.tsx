@@ -3,18 +3,22 @@ import styled from 'styled-components';
 import Page from '../../components/Page';
 import Form from "./components/Form"
 import Hero from "./components/Hero"
+import { useWallet } from 'use-wallet';
 
-// Firebase dependencies 
+// Firebase dependencies
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from "firebase";
 import fire from '../../fire';
+import { useList } from 'react-firebase-hooks/database';
 
 // https://youtu.be/cFgoSrOui2M
 // https://medium.com/geekculture/firebase-auth-with-react-and-typescript-abeebcd7940a
 
 const Login: React.FC = () => {
 
-  const [user, setUser] = useState<firebase.User | null>(null)  
+  const { reset } = useWallet()
+  const [users, loading, error] = useList(firebase.database().ref('/users'));
+  const [user, setUser] = useState<firebase.User | null>(null)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('')
@@ -29,7 +33,7 @@ const Login: React.FC = () => {
   const clearErrors = () => {
     setEmailError('')
     setPasswordError('')
-  }  
+  }
 
   const handleLogin = () => {
     clearErrors()
@@ -37,6 +41,7 @@ const Login: React.FC = () => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .catch(err => {
+        console.log("Here")
         switch(err.code) {
           case "auth/invalid-email":
           case "auth/user-disabled":
@@ -50,7 +55,7 @@ const Login: React.FC = () => {
     })
   }
 
-  
+
   const handleSignup = () => {
     clearErrors()
     const newUser = fire
@@ -60,16 +65,25 @@ const Login: React.FC = () => {
         if ( results ) {
           //Add a new entry in the users tree in the database
           firebase.database().ref('users').child(results.user.uid).set({
-            email: results.user.email, 
-            uid: results.user.uid
+            email: results.user.email,
+            uid: results.user.uid,
+            amountDeposited: '0',
+            lifetimeDeposited: '0'
           })
-        }        
+          /*Update Global numUsers value in the database*/
+          !loading && users ? (
+              firebase.database().ref('Global/numUsers').set(String(users.length))
+          ):(
+              firebase.database().ref('Global/numUsers').set(String(0))
+          )
+          /**********************************************/
+        }
       })
       .catch(err => {
         console.log(err)
         switch(err.code) {
           case "auth/email-already-in-use":
-          case "auth/invalid-email":          
+          case "auth/invalid-email":
             setEmailError(err.message)
             break;
           case "auth/weak-password":
@@ -78,13 +92,12 @@ const Login: React.FC = () => {
         }
     })
 
-  
-
-    
   }
 
   const handleSignout = () => {
-    fire.auth().signOut()      
+    fire.auth().signOut()
+    reset()
+    console.log("SUCCESS!")
   }
 
   const authListener = () => {
@@ -92,7 +105,7 @@ const Login: React.FC = () => {
       if (user) {
         //console.log(user)
         clearInputs()
-        setUser(user)        
+        setUser(user)
       } else {
         setUser(null)
       }
@@ -110,47 +123,47 @@ const Login: React.FC = () => {
   const onSetHasAccount = (hasAccount:boolean) => {
     setHasAccount(hasAccount)
   }
-  
+
 
   useEffect(() => {
     authListener()
-  }, []) 
+  }, [])
 
   return(
-    <Page>     
-      
-      <ResponsiveWrap>         
+    <Page>
+
+      <ResponsiveWrap>
 
         { user ?  (
-          <Hero 
-            username={user.email} 
-            handleLogout={handleSignout} 
+          <Hero
+            username={user.email}
+            handleLogout={handleSignout}
           />
         ) : (
-          <Form 
+          <Form
             email={email}
             password={password}
-            hasAccount={hasAccount}          
+            hasAccount={hasAccount}
             emailError={emailError}
-            passwordError={passwordError}  
-            setEmail={onSetEmail}            
-            setPassword={onSetPassword} 
+            passwordError={passwordError}
+            setEmail={onSetEmail}
+            setPassword={onSetPassword}
             setHasAccount={onSetHasAccount}
             handleLogin={handleLogin}
-            handleSignup={handleSignup}            
+            handleSignup={handleSignup}
           />
-        )}       
+        )}
 
-      </ResponsiveWrap> 
+      </ResponsiveWrap>
     </Page>
   );
 };
 
 const ResponsiveWrap = styled.div`
   width: 100%;
-  max-width: 50vw;    
+  max-width: 50vw;
   text-align: center;
-  
+
 `;
 
 export default Login;
