@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
 import CreateProject from "./components/CreateProject"
+import UserProjects from "./components/UserProjects";
 import { NavLink } from "react-router-dom"
 import Card from '../../components/Card'
 import Button from '../../components/Button';
@@ -10,7 +11,7 @@ import { AuthContext } from "../../contexts/Auth/AuthContext";
 
 //import Hero from "./components/Hero"
 
-// Firebase dependencies 
+// Firebase dependencies
 import firebase from "firebase";
 import { useList } from 'react-firebase-hooks/database';
 
@@ -18,9 +19,9 @@ const Projects: React.FC = () => {
   const user = useContext(AuthContext);
 
   /*
-  // Here are just a few examples using firebase 
+  // Here are just a few examples using firebase
 
-  const testFirebase = () => {    
+  const testFirebase = () => {
     // https://bezkoder.com/react-firebase-hooks-crud/
     console.log("Testing Firebase functionality")
 
@@ -30,18 +31,18 @@ const Projects: React.FC = () => {
     firebase.database().ref('users/123/name').set("Tim")
     // Same as above but this uses the .child method to consctruct the path
     firebase.database().ref('users').child(userID).child('name').set("Tim")
-  
+
     // How to create a new entry on an object
     firebase.database().ref('users/123/favoriteColor').set("blue")
     firebase.database().ref('users/123/favoriteFood').set("fruit")
-  
+
     // How to delete an entry ("favoriteFood")
     firebase.database().ref('users/123/favoriteFood').remove()
-  }  
+  }
 
   useEffect(()=>{
     testFirebase()
-  }, [])  
+  }, [])
   */
 
   // Get a list of ALL of the projects
@@ -49,10 +50,12 @@ const Projects: React.FC = () => {
 
   const [projectName, setProjectName] = useState('')
   const [projectCategory, setProjectCategory] = useState('');
-  
+  const [projectGoal, setProjectGoal] = useState('');
+
   const clearInputs = () => {
     setProjectName('')
     setProjectCategory('')
+    setProjectGoal('')
   }
 
   const onCreateProject = () => {
@@ -67,42 +70,57 @@ const Projects: React.FC = () => {
     const newProjectRef = firebase.database().ref('projects').push({
       name: projectName,
       category: projectCategory,
+      goal: projectGoal,
       user: user.uid
-    })    
+    })
 
     // Add a new entry in the user-projects tree
     firebase.database().ref('user-projects').child(user.uid).push({
       pid: newProjectRef.key
     })
+
+    /*Update Global numBeneficiaries*/
+    !loading && projects ? (
+        firebase.database().ref('Global/numBeneficiaries').set(String(projects.length))
+    ):(
+        firebase.database().ref('Global/numBeneficiaries').set(String(0))
+    )
+    /********************************/
   }
 
     return(
-<Page>     
-      
-      <ResponsiveWrap>        
+<Page>
+
+      <ResponsiveWrap>
 
       { user ? (
-        <CreateProject 
+        <CreateProject
           name={projectName}
           category={projectCategory}
-          setName={setProjectName}  
+          goal={projectGoal}
+          setName={setProjectName}
           setCategory={setProjectCategory}
-          onSubmit={onCreateProject} 
-        />          
+          setGoal={setProjectGoal}
+          onSubmit={onCreateProject}
+        />
       ) : (
-        <LoginToCreate>          
-          <StyledLink to='/signin'>Sign In to create a project</StyledLink>
+        <LoginToCreate>
+          <StyledLink to='/signin'>Sign In to manage your projects</StyledLink>
         </LoginToCreate>
-      )}        
-      
+      )}
+      {user && (<UserProjects />)}
       <ProjectsList>
         {error && <strong>Error: {error}</strong>}
         {loading && <span>Loading...</span>}
         <table>
           <thead>
             <tr>
+                <th colSpan={4}>All Projects</th>
+            </tr>
+            <tr>
               <th>Name</th>
               <th>Category</th>
+              <th>Goal</th>
               <th>ID</th>
             </tr>
           </thead>
@@ -113,14 +131,15 @@ const Projects: React.FC = () => {
               <tr key={project.key}>
                 <td>{project.val().name}</td>
                 <td>{project.val().category}</td>
+                <td>{project.val().interestGoal}</td>
                 <td>{project.key}</td>
-              </tr>              
+              </tr>
             ))}
           </tbody>
         </table>
-      </ProjectsList>        
+      </ProjectsList>
 
-      </ResponsiveWrap> 
+      </ResponsiveWrap>
     </Page>
   );
 };
@@ -128,8 +147,8 @@ const Projects: React.FC = () => {
 const ResponsiveWrap = styled.div`
   color: ${props => props.theme.color.white};
   width: 100%;
-  max-width: 50vw;    
-  text-align: center;  
+  max-width: 50vw;
+  text-align: center;
 `;
 
 const LoginToCreate = styled.div`
@@ -138,16 +157,16 @@ const LoginToCreate = styled.div`
 
     button {
       text-align: center;
-    }    
+    }
 `;
 
 const StyledLink = styled(NavLink)`
   color: ${props => props.theme.color.purple[400]};
-  font-weight: 700;  
+  font-weight: 700;
   text-decoration: none;
   &:hover {
     color: ${props => props.theme.color.purple[300]};
-  }  
+  }
 `;
 
 const ProjectsList = styled.div`
@@ -157,7 +176,7 @@ const ProjectsList = styled.div`
   }
 
   table tr th {
-    padding: 10px 20px;    
+    padding: 10px 20px;
   }
 
   table td {
@@ -169,8 +188,8 @@ const ProjectsList = styled.div`
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    border-right: 1px solid rgba(255, 255, 255, 0.2); 
-  }  
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  }
 `;
 
 export default Projects;
