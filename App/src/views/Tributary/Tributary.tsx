@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState, FormEventHandler, ChangeEvent } from 'react';
+import Web3 from 'web3';
+import React, { useCallback, useEffect, useMemo, useState, useContext, FormEventHandler, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
 import PageHeader from '../../components/PageHeader';
@@ -6,25 +7,29 @@ import Button from '../../components/Button';
 import Spacer from '../../components/Spacer';
 import TokenSymbol from '../../components/TokenSymbol';
 import AccountButton from '../../components/TopBar/components/AccountButton'
+import SignInButton from './components/SignInButton'
 
 import { Switch, Route, NavLink, useLocation, Link } from "react-router-dom";
 import numeral from 'numeral';
 import useiceWater from '../../hooks/useIceWater';
 import { BidData, AskData } from '../../ice-water/types';
 import { useWallet } from 'use-wallet';
-import { useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form';
+import { AuthContext } from "../../contexts/Auth/AuthContext";
 
 import TxModal from '../../components/TopBar/components/TxModal';
 import useTransactionsModal from '../../hooks/useTransactionsModal';
 
 import { useTransactionAdder, useAllTransactions } from '../../state/transactions/hooks';
 
+import firebase from 'firebase';
+import { useList } from 'react-firebase-hooks/database';
 
 interface onProps {
   amount: number;
 }
 
-interface iceBidAskData {  
+interface iceBidAskData {
   bid?: BidData,
   ask?: AskData,
   icePrice?: number
@@ -32,21 +37,24 @@ interface iceBidAskData {
 
 const Tributary: React.FC = ({  }) => {
 
-    const [goal, setGoal] = useState('1 Billion');
-    const [contribution, setContribution] = useState(0);
-    const [tributeTokens, setTributeTokens] = useState(999);
+  const user = useContext(AuthContext);
+
+  const [goal, setGoal] = useState('1 Billion');
+  const [contribution, setContribution] = useState(0);
+  const [yveTokens, setYveTokens] = useState(999);
 
   const iceWater = useiceWater();
   const addTransaction = useTransactionAdder();
   const allTransactions = useAllTransactions();
 
   const { account, status } = useWallet();
+  const wallet = useWallet();
   const { pathname } = useLocation();
 
   // const { path } = this.props.match;
   const path = "/tributary"
   const title = "Tributary"
-  const symbol = "TRIB"   
+  const symbol = "TRIB"
 
   const [{ bid, ask, icePrice }, setIceBidAsk] = useState<iceBidAskData>({});
   const fetchIceBidAsk = useCallback(async () => {
@@ -54,56 +62,120 @@ const Tributary: React.FC = ({  }) => {
       iceWater.getIceBid(),
       iceWater.getIceAsk(),
       iceWater.getIcePrice()
-    ]);        
+    ]);
 
-    setIceBidAsk({ bid, ask, icePrice });    
+    setIceBidAsk({ bid, ask, icePrice });
   }, [iceWater, setIceBidAsk]);
-
-
 
   useEffect(() => {
     if (iceWater) {
       fetchIceBidAsk().catch((err) => console.error(err.stack));
     }
-  }, [iceWater, status]);   
+  }, [iceWater, status]);
 
   const [onPresentTransactionModal, onDismissTransactionModal] = useTransactionsModal(
     <TxModal showRecent={false} onDismiss={() => onDismissTransactionModal()} />,
   );
-  
+
   const handleContributeSubmit = () : FormEventHandler<HTMLFormElement> => {
+    /*Update global currTotDeposited value*/
+    let total = 0;
+    firebase.database().ref('Global/currTotDeposited').get().then((snapshot) => {
+        total = Number(snapshot.val())
+    });
+    total = total + Number(contribution);
+    firebase.database().ref('Global/currTotDeposited').set(String(total));
+    /**************************************/
+
+    /*Update global hisTotDeposited value*/
+    total = 0;
+    firebase.database().ref('Global/currTotDeposited').get().then((snapshot) => {
+        total = Number(snapshot.val())
+    });
+    total = total + Number(contribution);
+    firebase.database().ref('Global/currTotDeposited').set(String(total));
+    /*************************************/
+
+    /*Update amountDeposited for user*/
+    if (user) {
+        total = 0;
+        let refPath = 'users/' + String(user.uid) + '/amountDeposited'
+        firebase.database().ref(refPath).get().then((snapshot) => {
+            total = Number(snapshot.val())
+        });
+        total = total + Number(contribution);
+        firebase.database().ref(refPath).set(String(total));
+
+    /*********************************/
+
+    /*Update lifetimeDeposited for user*/
+        total = 0;
+        refPath = 'users/' + String(user.uid) + '/lifetimeDeposited'
+        firebase.database().ref(refPath).get().then((snapshot) => {
+            total = Number(snapshot.val())
+        });
+        total = total + Number(contribution);
+        firebase.database().ref(refPath).set(String(total));
+    }
+    /*********************************/
+
     alert("Handle Submit. Amount: " + contribution);
     return
   }
 
   const handleExchangeSubmit = () : FormEventHandler<HTMLFormElement> => {
-    alert ("Handle Submit. Amount: " + tributeTokens);
+
+    /*Update global currTotDeposited value*/
+    let total = 0;
+    firebase.database().ref('Global/currTotDeposited').get().then((snapshot) => {
+        total = Number(snapshot.val())
+    });
+    total = total - Number((yveTokens * 1.24).toFixed(4));
+    firebase.database().ref('Global/currTotDeposited').set(String(total));
+    /**************************************/
+
+    /*Update amountDeposited for user*/
+    if (user) {
+        total = 0;
+        let refPath = 'users/' + String(user.uid) + '/amountDeposited'
+        firebase.database().ref(refPath).get().then((snapshot) => {
+            total = Number(snapshot.val())
+        });
+        total = total - Number((yveTokens * 1.24).toFixed(4));
+        firebase.database().ref(refPath).set(String(total));
+    }
+    /*********************************/
+
+    alert ("Handle Submit. Amount: " + yveTokens);
     return
   }
 
- const handleChange = (e : ChangeEvent<HTMLInputElement>) : FormEventHandler<HTMLFormElement> => {    
+  const handleChange = (e : ChangeEvent<HTMLInputElement>) : FormEventHandler<HTMLFormElement> => {
     setContribution(parseFloat(e.target.value));
     return
   }
-  
-  const Contribute = () => 
+
+  const [projects, loading, error] = useList(firebase.database().ref('/projects'));
+
+  const Contribute = () =>
   <div>
-    <Card>   
+    <Card>
        <Styles>
         <form key="contributeform">
             <div className="inputGrp">
                 <label>Contribution Amount</label>
                   <select name="project" id="project" style={{width: '100%'}}>
-                          <option value="1">Project 1</option>
-                          <option value="2">Project 2</option>
-                          <option value="3">Project 3</option>
+                  {!loading && projects &&
+                    projects.map((project, index) => (
+                      <option value = {String(index)} style={{backgroundColor: '#424242'}}>{project.val().name}</option>
+                    ))}
                   </select>
                   <Spacer></Spacer>
                 <div className='inputWrap'>
-                    <input 
+                    <input
                       autoFocus
                       key="contribution"
-                      name="contribution" 
+                      name="contribution"
                       value={contribution}
                       onChange={(
                         e: React.ChangeEvent<HTMLInputElement>,
@@ -111,50 +183,55 @@ const Tributary: React.FC = ({  }) => {
                         setContribution(
                             parseFloat(e.target.value),
                         );
-                    }} 
-                        placeholder="0.00"                       
+                    }}
+                        placeholder="0.00"
                         type='number'
-                        //{...register("amount", { 
+                        //{...register("amount", {
                         //    required: true,
-                        //    pattern: /^-?[0-9]\d*\.?\d*$/                           
+                        //    pattern: /^-?[0-9]\d*\.?\d*$/
                         //})}
                     />
                     <select name="curency" id="currency">
-                        <option value="UST">UST</option>
+                        <option value="ERC20">ERC20</option>
                     </select>
                 </div>
             </div>
             <div className="inputGrp">
-                <label>Staked: <b>{contribution ? contribution : 0}</b> UST</label>
+                <label>Staked: <b>{contribution ? contribution : 0}</b> ERC20 </label>
                 <label>H2O Amount to recieve: <b>{contribution ? (contribution / 1.24).toFixed(4) : 0}</b></label>
-            </div>    
-            
-            {account ? (        
-                <Button
-                type="submit"
-                size="sm"
-                text={"Submit Contribution"}
-                variant="tertiary"
-                onClick={handleContributeSubmit}
-                />  
+            </div>
+
+            {user ? (
+                account ? (
+                    firebase.database().ref('users/').child(user.uid).child('/walletAddress').set(String(account)),
+                    <Button
+                    type="submit"
+                    size="sm"
+                    text={"Submit Contribution"}
+                    variant="tertiary"
+                    onClick={handleContributeSubmit}
+                    />
+                ):(
+                    <AccountButton />
+                )
             ) : (
-                <AccountButton />
+                <SignInButton />
             )}
 
         </form>
         </Styles>
-    </Card>    
-    
+    </Card>
+
     {account ? (
-      <Card>  
+      <Card>
         <YourBidAsk>
           <YourBidAskColumn>
-            <StyledInputLabel>Total UST staked</StyledInputLabel>
+            <StyledInputLabel>Total ERC20 staked</StyledInputLabel>
             { bid && bid.price != null ? (
               <div>Import from records: {numeral(contribution).format('0,0')}</div>
             ) : (
               <div>-</div>
-            )}             
+            )}
           </YourBidAskColumn>
           <YourBidAskColumn>
             <StyledInputLabel>Total H2O Earned</StyledInputLabel>
@@ -162,78 +239,82 @@ const Tributary: React.FC = ({  }) => {
               <div> Import from records: {numeral(bid.amount).format('0,0')}</div>
             ) : (
               <div>-</div>
-            )} 
+            )}
           </YourBidAskColumn>
         </YourBidAsk>
-      </Card> 
+      </Card>
     ) : (
       null
-    )}       
+    )}
   </div>;
-  
-  const Exchange = () =>  
+
+  const Exchange = () =>
   <div>
-    <Card>   
+    <Card>
       <Styles>
       <form key="exchangeform">
             <div className="inputGrp">
-                <label>Exchange Tribute Tokens back to UST</label>
+                <label>Exchange yveCRV back to ERC20</label>
                 <div className='inputWrap'>
-                    <input 
+                    <input
                       autoFocus
                       key="exchange"
-                      name="tributetokens" 
-                      value={tributeTokens}
+                      name="yveTokens"
+                      value={yveTokens}
                       onChange={(
                         e: React.ChangeEvent<HTMLInputElement>,
                     ): void => {
-                        setTributeTokens(
+                        setYveTokens(
                             parseFloat(e.target.value),
                         );
-                    }} 
-                        placeholder="0.00"                       
+                    }}
+                        placeholder="0.00"
                         type='number'
-                        //{...register("amount", { 
+                        //{...register("amount", {
                         //    required: true,
-                        //    pattern: /^-?[0-9]\d*\.?\d*$/                           
+                        //    pattern: /^-?[0-9]\d*\.?\d*$/
                         //})}
                     />
                     <select name="curency" id="currency">
-                        <option value="TT">Tribute Tokens</option>
+                        <option value="CRV">yveCRV</option>
                     </select>
                 </div>
             </div>
             <div className="inputGrp">
-                <label><b>{tributeTokens ? tributeTokens : 0} H2O and Tribute Tokens will be burned</b></label>
-                <label>UST Amount to recieve: <b>{tributeTokens ? (tributeTokens * 1.24).toFixed(4) : 0}</b></label>
-            </div>    
-            
-            {account ? (        
-                <Button
-                type="submit"
-                size="sm"
-                text={"Submit Exchange"}
-                variant="tertiary"
-                onClick={handleExchangeSubmit}
-                />  
+                <label><b>{yveTokens ? yveTokens : 0} H2O and yveCRV tokens will be burned</b></label>
+                <label>ERC20 Amount to recieve: <b>{yveTokens ? (yveTokens * 1.24).toFixed(4) : 0}</b></label>
+            </div>
+
+            {user ? (
+                account ? (
+                    <Button
+                    type="submit"
+                    size="sm"
+                    text={"Submit Contribution"}
+                    variant="tertiary"
+                    onClick={handleContributeSubmit}
+                    />
+                ):(
+                    <AccountButton />
+                )
             ) : (
-                <AccountButton />
+                <SignInButton />
             )}
 
         </form>
       </Styles>
-    </Card>        
+    </Card>
     {account ? (
-      <Card>  
-        <h4>Your Current Position</h4> 
+      <Card>
+        <h4>Your Current Position</h4>
         <YourBidAsk>
           <YourBidAskColumn>
-            <StyledInputLabel>Tribute Tokens</StyledInputLabel>
-            { tributeTokens ? (
-              <div>{numeral(tributeTokens).format('0,0')}</div>
+            <StyledInputLabel>yveCRV</StyledInputLabel>
+            { yveTokens ? (
+              <div>{numeral(yveTokens).format('0,0')}</div>
             ) : (
               <div>-</div>
-            )} 
+            )}
           </YourBidAskColumn>
           <YourBidAskColumn>
             <StyledInputLabel>H2O Tokens</StyledInputLabel>
@@ -241,38 +322,38 @@ const Tributary: React.FC = ({  }) => {
               <div>{"{import H2O}"}</div>
             ) : (
               <div>-</div>
-            )} 
+            )}
           </YourBidAskColumn>
         </YourBidAsk>
       </Card>
     ) : (
       null
-    )} 
-  </div>; 
-  
-  
+    )}
+  </div>;
+
+
   return (
-    <Page>     
-      
-      <ResponsiveWrap>    
-        <PageHeader        
+    <Page>
+
+      <ResponsiveWrap>
+        <PageHeader
           subtitle="Invest in this project. Give to the river of H2O and get kickbacks as we achieve our goals."
           title="Tributary"
           //symbol="ICE"
         />
-          <Spacer size="md" />   
+          <Spacer size="md" />
 
           <MarketCard>
             <Header>
                 Start Earning H2O
-            </Header> 
-            <br></br>             
+            </Header>
+            <br></br>
             <StyledInputLabel>
                 We want to reward early adopters of our project.
-                <br></br> 
-                Just stake UST to contribute to the project and you will recieve kickbacks as we reach our goals!
-            </StyledInputLabel>  
-            
+                <br></br>
+                Just stake ERC20 to contribute to the project and you will recieve kickbacks as we reach our goals!
+            </StyledInputLabel>
+
           </MarketCard>
 
           <Spacer size="md" />
@@ -280,16 +361,16 @@ const Tributary: React.FC = ({  }) => {
           <TradeCardWrap>
             <TradeCard>
                 <Tabs className="cardTabs">
-                <NavLink                 
-                  to={`${path}/contribute`} 
+                <NavLink
+                  to={`${path}/contribute`}
                   className="cardTab"
                   exact
                   activeClassName="cardTabActive"
                   isActive={() => [`${path}`, `${path}/contribute`].includes(pathname)}>
                     Contribute
                 </NavLink>
-                
-                <NavLink 
+
+                <NavLink
                   to={`${path}/exchange`}
                   className="cardTab"
                   exact
@@ -298,7 +379,7 @@ const Tributary: React.FC = ({  }) => {
                   </NavLink>
               </Tabs>
 
-            
+
               <Content>
                 <Switch>
                   <Route path={`${path}`} exact component={Contribute} />
@@ -308,25 +389,25 @@ const Tributary: React.FC = ({  }) => {
               </Content>
 
             </TradeCard>
-          </TradeCardWrap>   
+          </TradeCardWrap>
 
-          <Spacer size="md" /> 
+          <Spacer size="md" />
 
           <MarketCard>
-            <StyledInputLabel>Tributary Goal</StyledInputLabel>              
+            <StyledInputLabel>Tributary Goal</StyledInputLabel>
             <Goal>
-            {goal} 
+            {goal}
             <ProgressBar/>
             </Goal>
             <StyledInputLabel>
                 We airdrop rewards to investers as we meet our goals.
-            </StyledInputLabel>  
+            </StyledInputLabel>
             <StyledInputLabel>
               Last airdrop: {"{import data}"}
             </StyledInputLabel>
           </MarketCard>
 
-      </ResponsiveWrap> 
+      </ResponsiveWrap>
     </Page>
   );
 };
@@ -339,55 +420,26 @@ color: ${(props) => props.theme.color.white};
 const ProgressBar = styled.div`
   width: ${500000000/1000000000*100}%;
   height: 1rem;
-  background-color: #FFFFFF;  
+  background-color: #FFFFFF;
   border-radius: 0.25rem;
   margin-top: 0.5rem;
-  margin-bottom: 0.5rem; 
+  margin-bottom: 0.5rem;
 `;
 
 const pageStyle = styled.div`
   width: 100%;
-  max-width: 600px;  
+  max-width: 600px;
 `;
 
 const ResponsiveWrap = styled.div`
   width: 100%;
-  max-width: 500px;    
+  max-width: 500px;
 `;
 
-const MarketCard = styled.div`  
+const MarketCard = styled.div`
   padding: ${(props) => props.theme.spacing[3]}px;
   color: ${(props) => props.theme.color.white};
   -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px); 
-  -webkit-backdrop-filter: blur(5px); 
-`;
-
-// const MarketCard = styled.div`  
-//   padding: ${(props) => props.theme.spacing[3]}px;
-//   color: ${(props) => props.theme.color.grey[700]};
-//   -webkit-border-bottom-right-radius: 5px;
-//   -webkit-border-bottom-left-radius: 5px;
-//   -moz-border-radius-bottomright: 5px;
-//   -moz-border-radius-bottomleft: 5px;
-//   border-bottom-right-radius: 5px;
-//   border-bottom-left-radius: 5px;
-//   background-color: ${(props) => props.theme.color.white};  
-// `;
-
-const Goal = styled.div`  
-  font-size: 3rem;
-  color: ${(props) => props.theme.color.white};
-`;
-
-const TradeCardWrap = styled.div`  
--webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -398,29 +450,7 @@ const TradeCardWrap = styled.div`
   -webkit-backdrop-filter: blur(5px);
 `;
 
-const TradeCard = styled.div`  
-
-`;
-
-const Tabs = styled.div`  
-
-`;
-
-const YourBidAsk = styled.div`  
-  display: flex;
-`;
-
-const YourBidAskColumn = styled.div`  
-  flex: 1;
-`;
-
-
-const Card = styled.div`  
-  padding: ${(props) => props.theme.spacing[3]}px;
-  color: ${(props) => props.theme.color.white};  
-`;
-
-// const Card = styled.div`  
+// const MarketCard = styled.div`
 //   padding: ${(props) => props.theme.spacing[3]}px;
 //   color: ${(props) => props.theme.color.grey[700]};
 //   -webkit-border-bottom-right-radius: 5px;
@@ -432,7 +462,58 @@ const Card = styled.div`
 //   background-color: ${(props) => props.theme.color.white};
 // `;
 
-const Content = styled.div`  
+const Goal = styled.div`
+  font-size: 3rem;
+  color: ${(props) => props.theme.color.white};
+`;
+
+const TradeCardWrap = styled.div`
+-webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+`;
+
+const TradeCard = styled.div`
+
+`;
+
+const Tabs = styled.div`
+
+`;
+
+const YourBidAsk = styled.div`
+  display: flex;
+`;
+
+const YourBidAskColumn = styled.div`
+  flex: 1;
+`;
+
+
+const Card = styled.div`
+  padding: ${(props) => props.theme.spacing[3]}px;
+  color: ${(props) => props.theme.color.white};
+`;
+
+// const Card = styled.div`
+//   padding: ${(props) => props.theme.spacing[3]}px;
+//   color: ${(props) => props.theme.color.grey[700]};
+//   -webkit-border-bottom-right-radius: 5px;
+//   -webkit-border-bottom-left-radius: 5px;
+//   -moz-border-radius-bottomright: 5px;
+//   -moz-border-radius-bottomleft: 5px;
+//   border-bottom-right-radius: 5px;
+//   border-bottom-left-radius: 5px;
+//   background-color: ${(props) => props.theme.color.white};
+// `;
+
+const Content = styled.div`
 
 `;
 
@@ -448,8 +529,8 @@ const StyledLink = styled.a`
 `;
 
 
-const StyledInputLabel = styled.h4`    
-  margin: 0 0 10px 0;  
+const StyledInputLabel = styled.h4`
+  margin: 0 0 10px 0;
 `
 const Styles = styled.div`
  div.inputGrp {
@@ -468,7 +549,7 @@ const Styles = styled.div`
     border-right: 1px solid rgba(255, 255, 255, 0.2);
  }
 
- select{
+ select {
     height: 42px;
     font-size: 18px;
     color: ${props => props.theme.color.white};
@@ -482,7 +563,11 @@ const Styles = styled.div`
     border-right: 1px solid rgba(255, 255, 255, 0.2);
  }
 
- input {    
+ option {
+     background: rgbs(255, 255, 255, 0.1)
+ }
+
+ input {
     background: none;
     border: 0;
     color: ${props => props.theme.color.white};
@@ -498,7 +583,7 @@ const Styles = styled.div`
      color: rgba(255, 255, 255, 0.5);
  }
 
- 
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -516,7 +601,7 @@ input[type=number] {
  }
 
  .error {
-   color: ${props => props.theme.color.red[100]};      
+   color: ${props => props.theme.color.red[100]};
    margin: 10px 0px 0px 3px;
  }
 `;
