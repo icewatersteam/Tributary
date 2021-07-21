@@ -70,6 +70,7 @@ const Form: React.FC<FormProps> = ({
                                 value={goal}
                                 onChange={(e) => {setGoal(e.target.value)}}
                             />
+                            <label className="unit">Tokens</label>
                         </InputWrap>
                     </InputGrp>
 
@@ -153,7 +154,7 @@ const InputWrap = styled.div`
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
 
-    input {
+    input, select {
         background: none;
         border: 0;
         color: ${props => props.theme.color.white};
@@ -164,20 +165,13 @@ const InputWrap = styled.div`
         padding: 0;
         outline: none;
     }
-
     select {
         width: 250px;
         white-space: nowrap;
         overflow: hidden;
-        background: none;
-        border: 0;
-        color: ${props => props.theme.color.white};
-        font-size: 18px;
-        flex: 1;
-        height: 56px;
-        margin: 0;
-        padding: 0;
-        outline: none;
+    }
+    label.unit {
+        margin-left: 10px;
     }
 `;
 
