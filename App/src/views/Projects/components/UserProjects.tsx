@@ -19,12 +19,13 @@ const UserProjects: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th colSpan={4}>My Projects</th>
+                <th colSpan={5}>My Projects</th>
               </tr>
               <tr>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Goal</th>
+                <th>Wallet</th>
                 <th>ID</th>
               </tr>
             </thead>
@@ -36,7 +37,8 @@ const UserProjects: React.FC = () => {
                     <tr key={project.key}>
                       <td>{project.val().name}</td>
                       <td>{project.val().category}</td>
-                      <td>{project.val().interestGoal}</td>
+                      <td>{project.val().goal}</td>
+                      <td>{project.val().wallet}</td>
                       <td>{project.key}</td>
                     </tr>
                 ):(
@@ -62,6 +64,10 @@ const UserProjectsList = styled.div`
 
     table td {
       padding: 20px;
+    }
+
+    th {
+      text-align: center;
     }
 
     table tr {
