@@ -1,30 +1,37 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useContext } from 'react'
 import styled from 'styled-components';
 import Card from '../../../components/Card'
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
-import { useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form';
+import { AuthContext } from "../../../contexts/Auth/AuthContext";
+import firebase from "firebase";
+import { useList } from 'react-firebase-hooks/database';
 
 interface FormProps {
     name: string,
     category: string,
     goal: string,
+    wallet: string,
     setName: (name:string) => void,
     setCategory: (category:string) => void,
     setGoal: (goal:string) => void,
+    setWallet: (wallet:string) => void,
     onSubmit: () => void,
 }
-
 const Form: React.FC<FormProps> = ({
     name,
     category,
     goal,
+    wallet,
     setName,
     setCategory,
     setGoal,
+    setWallet,
     onSubmit
 }) => {
-
+    const user = useContext(AuthContext)
+    const [wallets, loading, error] = useList(firebase.database().ref('/users/').child(user.uid).child('/wallets'))
     return (
         <FormWrap>
             <Card style="glass">
@@ -63,6 +70,26 @@ const Form: React.FC<FormProps> = ({
                                 value={goal}
                                 onChange={(e) => {setGoal(e.target.value)}}
                             />
+                        </InputWrap>
+                    </InputGrp>
+
+                    <InputGrp>
+                        <label>Wallet Address</label>
+                        <InputWrap>
+                            <select
+                                required
+                                value={wallet}
+                                onChange={(e) => {setWallet((e.target as HTMLSelectElement).value)}}
+                            >
+                                {
+                                    !loading && wallets && wallets.map((aWallet, index) => (
+                                        (index === 0) ? (
+                                            setWallet(aWallet.val().address)
+                                        ):(null),
+                                        <option value={String(aWallet.val().address)}>{String(aWallet.val().address)}</option>
+                                    ))
+                                }
+                            </select>
                         </InputWrap>
                     </InputGrp>
 
@@ -127,6 +154,21 @@ const InputWrap = styled.div`
     border-right: 1px solid rgba(255, 255, 255, 0.1);
 
     input {
+        background: none;
+        border: 0;
+        color: ${props => props.theme.color.white};
+        font-size: 18px;
+        flex: 1;
+        height: 56px;
+        margin: 0;
+        padding: 0;
+        outline: none;
+    }
+
+    select {
+        width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
         background: none;
         border: 0;
         color: ${props => props.theme.color.white};
