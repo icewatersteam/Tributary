@@ -48,14 +48,16 @@ const Projects: React.FC = () => {
   // Get a list of ALL of the projects
   const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
-  const [projectName, setProjectName] = useState('')
+  const [projectName, setProjectName] = useState('');
   const [projectCategory, setProjectCategory] = useState('');
   const [projectGoal, setProjectGoal] = useState('');
+  const [projectWallet, setProjectWallet] = useState('');
 
   const clearInputs = () => {
     setProjectName('')
     setProjectCategory('')
     setProjectGoal('')
+    setProjectWallet('')
   }
 
   const onCreateProject = () => {
@@ -71,6 +73,7 @@ const Projects: React.FC = () => {
       name: projectName,
       category: projectCategory,
       goal: projectGoal,
+      wallet: projectWallet,
       user: user.uid
     })
 
@@ -98,9 +101,11 @@ const Projects: React.FC = () => {
           name={projectName}
           category={projectCategory}
           goal={projectGoal}
+          wallet={projectWallet}
           setName={setProjectName}
           setCategory={setProjectCategory}
           setGoal={setProjectGoal}
+          setWallet={setProjectWallet}
           onSubmit={onCreateProject}
         />
       ) : (
@@ -115,12 +120,13 @@ const Projects: React.FC = () => {
         <table>
           <thead>
             <tr>
-                <th colSpan={4}>All Projects</th>
+                <th colSpan={5}>All Projects</th>
             </tr>
             <tr>
               <th>Name</th>
               <th>Category</th>
               <th>Goal</th>
+              <th>Wallet</th>
               <th>ID</th>
             </tr>
           </thead>
@@ -131,7 +137,8 @@ const Projects: React.FC = () => {
               <tr key={project.key}>
                 <td>{project.val().name}</td>
                 <td>{project.val().category}</td>
-                <td>{project.val().interestGoal}</td>
+                <td>{project.val().goal}</td>
+                <td>{project.val().wallet}</td>
                 <td>{project.key}</td>
               </tr>
             ))}
@@ -147,7 +154,6 @@ const Projects: React.FC = () => {
 const ResponsiveWrap = styled.div`
   color: ${props => props.theme.color.white};
   width: 100%;
-  max-width: 50vw;
   text-align: center;
 `;
 
@@ -181,6 +187,10 @@ const ProjectsList = styled.div`
 
   table td {
     padding: 20px;
+  }
+
+  th {
+    text-align: center;
   }
 
   table tr {
