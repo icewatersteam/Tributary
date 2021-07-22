@@ -31,14 +31,15 @@ const Home2: React.FC = () => {
         <StyledSpacer/>
         <P>
             Tributary is a new platform for fundraising using blockchain innovation!
-            Built on the back of a cool cryptocurrency called H2O, the smart contracts give people the chance to invest in the new cryptocurrency.
+            Through smart contracts, users can invest in projects without risking any of their collateral.
             <StyledSpacer/>
-            A company can state a project to raise funds for and people invvest in the project by buying ERC20 and staking it in the project.
-            In return for staking ERC20 people recieve H2O and yveCRV tokens, which maintain their value over time.
-            The company can then use the interest that accrues to fund the project while the people are recieving the occational kickback as the project reaches it's goals.
+            First, someone submits a project to Tributary that they want funded. Then, anyone can invest in that project by staking yveCRV 
+            tokens in Tributary. Those people will always own the yveCRV tokens, while the tokens' interest supports the project.
+            In return for that support, people receive tH2O, which can be traded in for either H2O or their yveCRV tokens at any time.
+            The project can then use the interest that accrues for funding, while sending their supporters occasional kickbacks as the project reaches its goals.
             <StyledSpacer/>
             Tributary is the best way to connect early investing and fundraising.
-            Investors can contribute to a project and recieve kickbacks for their support.
+            Investors can contribute to a project and receive kickbacks for their support.
             <StyledSpacer/>
             <b>This is a great way to fund a project without the usual pains of sourcing capital.</b>
             <StyledSpacer/>

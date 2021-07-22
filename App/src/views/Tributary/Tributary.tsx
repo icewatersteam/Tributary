@@ -198,7 +198,7 @@ const Tributary: React.FC = ({  }) => {
             </div>
             <div className="inputGrp">
                 <label>Staked: <b>{contribution ? contribution : 0}</b> ERC20 </label>
-                <label>H2O Amount to recieve: <b>{contribution ? (contribution / 1.24).toFixed(4) : 0}</b></label>
+                <label>H2O Amount to receive: <b>{contribution ? (contribution / 1.24).toFixed(4) : 0}</b></label>
             </div>
 
             {user ? (
@@ -282,7 +282,7 @@ const Tributary: React.FC = ({  }) => {
             </div>
             <div className="inputGrp">
                 <label><b>{yveTokens ? yveTokens : 0} H2O and yveCRV tokens will be burned</b></label>
-                <label>ERC20 Amount to recieve: <b>{yveTokens ? (yveTokens * 1.24).toFixed(4) : 0}</b></label>
+                <label>ERC20 Amount to receive: <b>{yveTokens ? (yveTokens * 1.24).toFixed(4) : 0}</b></label>
             </div>
 
             {user ? (
@@ -351,7 +351,7 @@ const Tributary: React.FC = ({  }) => {
             <StyledInputLabel>
                 We want to reward early adopters of our project.
                 <br></br>
-                Just stake ERC20 to contribute to the project and you will recieve kickbacks as we reach our goals!
+                Just stake ERC20 to contribute to the project and you will receive kickbacks as we reach our goals!
             </StyledInputLabel>
 
           </MarketCard>
@@ -400,7 +400,7 @@ const Tributary: React.FC = ({  }) => {
             <ProgressBar/>
             </Goal>
             <StyledInputLabel>
-                We airdrop rewards to investers as we meet our goals.
+                We airdrop rewards to investors as we meet our goals.
             </StyledInputLabel>
             <StyledInputLabel>
               Last airdrop: {"{import data}"}
