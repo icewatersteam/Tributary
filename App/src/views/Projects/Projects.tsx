@@ -66,29 +66,36 @@ const Projects: React.FC = () => {
       return
     }
 
-    clearInputs()
+    /*Check for valid inputs*/
+    if (isNaN(Number(projectGoal))) {
+        document.getElementById("errMessage").innerHTML = 'Contribution goal must be a numeric value';
+    }
+    /************************/
+    else {
+        clearInputs()
+        document.getElementById("errMessage").innerHTML = '';
+        // Add a new entry in the projects tree
+        const newProjectRef = firebase.database().ref('projects').push({
+          name: projectName,
+          category: projectCategory,
+          goal: projectGoal,
+          wallet: projectWallet,
+          user: user.uid
+        })
 
-    // Add a new entry in the projects tree
-    const newProjectRef = firebase.database().ref('projects').push({
-      name: projectName,
-      category: projectCategory,
-      goal: projectGoal,
-      wallet: projectWallet,
-      user: user.uid
-    })
+        // Add a new entry in the user-projects tree
+        firebase.database().ref('user-projects').child(user.uid).push({
+          pid: newProjectRef.key
+        })
 
-    // Add a new entry in the user-projects tree
-    firebase.database().ref('user-projects').child(user.uid).push({
-      pid: newProjectRef.key
-    })
-
-    /*Update Global numBeneficiaries*/
-    !loading && projects ? (
-        firebase.database().ref('Global/numBeneficiaries').set(String(projects.length))
-    ):(
-        firebase.database().ref('Global/numBeneficiaries').set(String(0))
-    )
-    /********************************/
+        /*Update Global numBeneficiaries*/
+        !loading && projects ? (
+            firebase.database().ref('Global/numBeneficiaries').set(String(projects.length))
+        ):(
+            firebase.database().ref('Global/numBeneficiaries').set(String(0))
+        )
+        /********************************/
+    }
   }
 
     return(
@@ -110,7 +117,7 @@ const Projects: React.FC = () => {
         />
       ) : (
         <LoginToCreate>
-          <StyledLink to='/signin'>Sign In to manage your projects</StyledLink>
+          <StyledLink to='/signin'>Sign in to manage your projects</StyledLink>
         </LoginToCreate>
       )}
       {user && (<UserProjects />)}
@@ -203,3 +210,4 @@ const ProjectsList = styled.div`
 `;
 
 export default Projects;
+
