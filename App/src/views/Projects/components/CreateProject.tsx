@@ -30,8 +30,20 @@ const Form: React.FC<FormProps> = ({
     setWallet,
     onSubmit
 }) => {
+    const onClickButton = () => {
+        if (isNaN(Number(goal))) {
+            document.getElementById("errMessage").innerHTML = 'Contribution goal must be a numeric value';
+        }
+        else {
+            document.getElementById("errMessage").innerHTML = '';
+            onSubmit();
+        }
+    }
+
     const user = useContext(AuthContext)
+
     const [wallets, loading, error] = useList(firebase.database().ref('/users/').child(user.uid).child('/wallets'))
+
     return (
         <FormWrap>
             <Card style="glass">
@@ -72,6 +84,7 @@ const Form: React.FC<FormProps> = ({
                             />
                             <label className="unit">Tokens</label>
                         </InputWrap>
+                        <label id="errMessage" style={{color: 'red'}}/>
                     </InputGrp>
 
                     <InputGrp>
@@ -97,7 +110,7 @@ const Form: React.FC<FormProps> = ({
                     <ButtonGrp>
                         <br/>
                         <Button
-                            onClick={onSubmit}
+                            onClick={onClickButton}
                             variant="secondary">Create Project</Button>
                     </ButtonGrp>
                 </form>
