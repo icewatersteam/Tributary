@@ -41,7 +41,7 @@ const Tributary: React.FC = ({  }) => {
 
   const [goal, setGoal] = useState('1 Billion');
   const [contribution, setContribution] = useState(0);
-  const [yveTokens, setYveTokens] = useState(999);
+  const [h20Tokens, setH20Tokens] = useState(999);
 
   const iceWater = useiceWater();
   const addTransaction = useTransactionAdder();
@@ -130,7 +130,7 @@ const Tributary: React.FC = ({  }) => {
     firebase.database().ref('Global/currTotDeposited').get().then((snapshot) => {
         total = Number(snapshot.val())
     });
-    total = total - Number((yveTokens * 1.24).toFixed(4));
+    total = total - Number((h20Tokens * 1.24).toFixed(4));
     firebase.database().ref('Global/currTotDeposited').set(String(total));
     /**************************************/
 
@@ -141,12 +141,12 @@ const Tributary: React.FC = ({  }) => {
         firebase.database().ref(refPath).get().then((snapshot) => {
             total = Number(snapshot.val())
         });
-        total = total - Number((yveTokens * 1.24).toFixed(4));
+        total = total - Number((h20Tokens * 1.24).toFixed(4));
         firebase.database().ref(refPath).set(String(total));
     }
     /*********************************/
 
-    alert ("Handle Submit. Amount: " + yveTokens);
+    alert ("Handle Submit. Amount: " + h20Tokens);
     return
   }
 
@@ -192,12 +192,12 @@ const Tributary: React.FC = ({  }) => {
                         //})}
                     />
                     <select name="curency" id="currency">
-                        <option value="ERC20">ERC20</option>
+                        <option value="yveCRV">yveCRV</option>
                     </select>
                 </div>
             </div>
             <div className="inputGrp">
-                <label>Staked: <b>{contribution ? contribution : 0}</b> ERC20 </label>
+                <label>Staked: <b>{contribution ? contribution : 0}</b> yveCRV </label>
                 <label>H2O Amount to receive: <b>{contribution ? (contribution / 1.24).toFixed(4) : 0}</b></label>
             </div>
 
@@ -226,7 +226,7 @@ const Tributary: React.FC = ({  }) => {
       <Card>
         <YourBidAsk>
           <YourBidAskColumn>
-            <StyledInputLabel>Total ERC20 staked</StyledInputLabel>
+            <StyledInputLabel>Total yveCRV staked</StyledInputLabel>
             { bid && bid.price != null ? (
               <div>Import from records: {numeral(contribution).format('0,0')}</div>
             ) : (
@@ -254,17 +254,17 @@ const Tributary: React.FC = ({  }) => {
       <Styles>
       <form key="exchangeform">
             <div className="inputGrp">
-                <label>Exchange yveCRV back to ERC20</label>
+                <label>Exchange tH2O back to yveCRV</label>
                 <div className='inputWrap'>
                     <input
                       autoFocus
                       key="exchange"
-                      name="yveTokens"
-                      value={yveTokens}
+                      name="h20Tokens"
+                      value={h20Tokens}
                       onChange={(
                         e: React.ChangeEvent<HTMLInputElement>,
                     ): void => {
-                        setYveTokens(
+                        setH20Tokens(
                             parseFloat(e.target.value),
                         );
                     }}
@@ -276,13 +276,13 @@ const Tributary: React.FC = ({  }) => {
                         //})}
                     />
                     <select name="curency" id="currency">
-                        <option value="CRV">yveCRV</option>
+                        <option value="tH20">tH2O</option>
                     </select>
                 </div>
             </div>
             <div className="inputGrp">
-                <label><b>{yveTokens ? yveTokens : 0} H2O and yveCRV tokens will be burned</b></label>
-                <label>ERC20 Amount to receive: <b>{yveTokens ? (yveTokens * 1.24).toFixed(4) : 0}</b></label>
+                <label><b>{h20Tokens ? h20Tokens : 0} H2O and tH2O tokens will be burned</b></label>
+                <label>yveCRV Amount to receive: <b>{h20Tokens ? (h20Tokens * 1.24).toFixed(4) : 0}</b></label>
             </div>
 
             {user ? (
@@ -309,9 +309,9 @@ const Tributary: React.FC = ({  }) => {
         <h4>Your Current Position</h4>
         <YourBidAsk>
           <YourBidAskColumn>
-            <StyledInputLabel>yveCRV</StyledInputLabel>
-            { yveTokens ? (
-              <div>{numeral(yveTokens).format('0,0')}</div>
+            <StyledInputLabel>tH2O</StyledInputLabel>
+            { h20Tokens ? (
+              <div>{numeral(h20Tokens).format('0,0')}</div>
             ) : (
               <div>-</div>
             )}
@@ -351,7 +351,7 @@ const Tributary: React.FC = ({  }) => {
             <StyledInputLabel>
                 We want to reward early adopters of our project.
                 <br></br>
-                Just stake ERC20 to contribute to the project and you will receive kickbacks as we reach our goals!
+                Just stake yveCRV to contribute to the project and you will receive kickbacks as we reach our goals!
             </StyledInputLabel>
 
           </MarketCard>
