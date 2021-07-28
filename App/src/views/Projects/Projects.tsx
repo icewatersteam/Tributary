@@ -50,13 +50,13 @@ const Projects: React.FC = () => {
 
   const [projectName, setProjectName] = useState('');
   const [projectCategory, setProjectCategory] = useState('');
-  const [projectGoal, setProjectGoal] = useState('');
+  const [projectGoal, setProjectGoal] = useState(0);
   const [projectWallet, setProjectWallet] = useState('');
 
   const clearInputs = () => {
     setProjectName('')
     setProjectCategory('')
-    setProjectGoal('')
+    setProjectGoal(0)
     setProjectWallet('')
   }
 
