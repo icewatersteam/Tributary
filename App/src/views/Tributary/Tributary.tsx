@@ -41,7 +41,7 @@ const Tributary: React.FC = ({  }) => {
 
   const [goal, setGoal] = useState('1 Billion');
   const [contribution, setContribution] = useState(0);
-  const [h20Tokens, setH20Tokens] = useState(999);
+  const [H2OTokens, setH2OTokens] = useState(999);
 
   const iceWater = useiceWater();
   const addTransaction = useTransactionAdder();
@@ -78,6 +78,7 @@ const Tributary: React.FC = ({  }) => {
   );
 
   const handleContributeSubmit = () : FormEventHandler<HTMLFormElement> => {
+
     /*Update global currTotDeposited value*/
     let total = 0;
     firebase.database().ref('Global/currTotDeposited').get().then((snapshot) => {
@@ -130,7 +131,7 @@ const Tributary: React.FC = ({  }) => {
     firebase.database().ref('Global/currTotDeposited').get().then((snapshot) => {
         total = Number(snapshot.val())
     });
-    total = total - Number((h20Tokens * 1.24).toFixed(4));
+    total = total - Number((H2OTokens * 1.24).toFixed(4));
     firebase.database().ref('Global/currTotDeposited').set(String(total));
     /**************************************/
 
@@ -141,12 +142,12 @@ const Tributary: React.FC = ({  }) => {
         firebase.database().ref(refPath).get().then((snapshot) => {
             total = Number(snapshot.val())
         });
-        total = total - Number((h20Tokens * 1.24).toFixed(4));
+        total = total - Number((H2OTokens * 1.24).toFixed(4));
         firebase.database().ref(refPath).set(String(total));
     }
     /*********************************/
 
-    alert ("Handle Submit. Amount: " + h20Tokens);
+    alert ("Handle Submit. Amount: " + H2OTokens);
     return
   }
 
@@ -184,12 +185,12 @@ const Tributary: React.FC = ({  }) => {
                             parseFloat(e.target.value),
                         );
                     }}
-                        placeholder="0.00"
-                        type='number'
-                        //{...register("amount", {
-                        //    required: true,
-                        //    pattern: /^-?[0-9]\d*\.?\d*$/
-                        //})}
+                      placeholder="0.00"
+                      type='number'
+                      //{...register("amount", {
+                      //    required: true,
+                      //    pattern: /^-?[0-9]\d*\.?\d*$/
+                      //})}
                     />
                     <select name="curency" id="currency">
                         <option value="yveCRV">yveCRV</option>
@@ -198,7 +199,7 @@ const Tributary: React.FC = ({  }) => {
             </div>
             <div className="inputGrp">
                 <label>Staked: <b>{contribution ? contribution : 0}</b> yveCRV </label>
-                <label>H2O Amount to receive: <b>{contribution ? (contribution / 1.24).toFixed(4) : 0}</b></label>
+                <label>tH2O to receive: <b>{contribution ? (contribution / 1.24).toFixed(4) : 0}</b></label>
             </div>
 
             {user ? (
@@ -259,12 +260,12 @@ const Tributary: React.FC = ({  }) => {
                     <input
                       autoFocus
                       key="exchange"
-                      name="h20Tokens"
-                      value={h20Tokens}
+                      name="H2OTokens"
+                      value={H2OTokens}
                       onChange={(
                         e: React.ChangeEvent<HTMLInputElement>,
                     ): void => {
-                        setH20Tokens(
+                        setH2OTokens(
                             parseFloat(e.target.value),
                         );
                     }}
@@ -276,13 +277,13 @@ const Tributary: React.FC = ({  }) => {
                         //})}
                     />
                     <select name="curency" id="currency">
-                        <option value="tH20">tH2O</option>
+                        <option value="tH2O">tH2O</option>
                     </select>
                 </div>
             </div>
             <div className="inputGrp">
-                <label><b>{h20Tokens ? h20Tokens : 0} H2O and tH2O tokens will be burned</b></label>
-                <label>yveCRV Amount to receive: <b>{h20Tokens ? (h20Tokens * 1.24).toFixed(4) : 0}</b></label>
+                <label><b>{H2OTokens ? H2OTokens : 0} H2O and tH2O tokens will be burned</b></label>
+                <label>yveCRV Amount to receive: <b>{H2OTokens ? (H2OTokens * 1.24).toFixed(4) : 0}</b></label>
             </div>
 
             {user ? (
@@ -310,8 +311,8 @@ const Tributary: React.FC = ({  }) => {
         <YourBidAsk>
           <YourBidAskColumn>
             <StyledInputLabel>tH2O</StyledInputLabel>
-            { h20Tokens ? (
-              <div>{numeral(h20Tokens).format('0,0')}</div>
+            { H2OTokens ? (
+              <div>{numeral(H2OTokens).format('0,0')}</div>
             ) : (
               <div>-</div>
             )}
