@@ -11,11 +11,11 @@ import { useList } from 'react-firebase-hooks/database';
 interface FormProps {
     name: string,
     category: string,
-    goal: string,
+    goal: number,
     wallet: string,
     setName: (name:string) => void,
     setCategory: (category:string) => void,
-    setGoal: (goal:string) => void,
+    setGoal: (goal:number) => void,
     setWallet: (wallet:string) => void,
     onSubmit: () => void,
 }
@@ -31,13 +31,7 @@ const Form: React.FC<FormProps> = ({
     onSubmit
 }) => {
     const onClickButton = () => {
-        if (isNaN(Number(goal))) {
-            document.getElementById("errMessage").innerHTML = 'Contribution goal must be a numeric value';
-        }
-        else {
-            document.getElementById("errMessage").innerHTML = '';
-            onSubmit();
-        }
+        onSubmit()
     }
 
     const user = useContext(AuthContext)
@@ -77,14 +71,20 @@ const Form: React.FC<FormProps> = ({
                         <label>Contribution Goal</label>
                         <InputWrap>
                             <input
-                                type="text"
                                 required
                                 value={goal}
-                                onChange={(e) => {setGoal(e.target.value)}}
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>,
+                              ): void => {
+                                  setGoal(
+                                      parseFloat(e.target.value),
+                                  );
+                              }}
+                                placeholder='0.00'
+                                type='number'
                             />
                             <label className="unit">Tokens</label>
                         </InputWrap>
-                        <label id="errMessage" style={{color: 'red'}}/>
                     </InputGrp>
 
                     <InputGrp>
@@ -174,10 +174,17 @@ const InputWrap = styled.div`
         font-size: 18px;
         flex: 1;
         height: 56px;
-        margin: 0;
         padding: 0;
         outline: none;
+        margin: 0;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     select {
         width: 250px;
         white-space: nowrap;
