@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
-import CreateProject from "./components/CreateProject"
+//import CreateProject from "./components/CreateProject"
 import UserProjects from "./components/UserProjects";
 import { NavLink } from "react-router-dom"
 import Card from '../../components/Card'
@@ -96,7 +96,7 @@ const Projects: React.FC = () => {
 
       <ResponsiveWrap>
 
-      { user ? (
+      {/* user ? (
         <CreateProject
           name={projectName}
           category={projectCategory}
@@ -112,7 +112,7 @@ const Projects: React.FC = () => {
         <LoginToCreate>
           <StyledLink to='/signin'>Sign in to manage your projects</StyledLink>
         </LoginToCreate>
-      )}
+    )*/}
       {user && (<UserProjects />)}
       <ProjectsList>
         {error && <strong>Error: {error}</strong>}
