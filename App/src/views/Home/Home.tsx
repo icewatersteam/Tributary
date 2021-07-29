@@ -21,7 +21,7 @@ const Home2: React.FC = () => {
                 className="IconSvg"
                 // style={{ height: 65, position: 'relative', top: 15 }}
                 src={
-                    require('../../assets/img/delta.png')
+                    require('../../assets/img/TributaryDelta.png')
                     .default
                 }
                 />
