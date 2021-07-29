@@ -11,8 +11,8 @@ import SignInButton from './components/SignInButton'
 
 import { Switch, Route, NavLink, useLocation, Link } from "react-router-dom";
 import numeral from 'numeral';
-import useiceWater from '../../hooks/useIceWater';
-import { BidData, AskData } from '../../ice-water/types';
+//import useiceWater from '../../hooks/useIceWater';
+//import { BidData, AskData } from '../../ice-water/types';
 import { useWallet } from 'use-wallet';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from "../../contexts/Auth/AuthContext";
@@ -45,7 +45,7 @@ const Tributary: React.FC = ({  }) => {
   const [contribution, setContribution] = useState(0);
   const [H2OTokens, setH2OTokens] = useState(0);
 
-  const iceWater = useiceWater();
+  //const iceWater = useiceWater();
   const addTransaction = useTransactionAdder();
   const allTransactions = useAllTransactions();
 
