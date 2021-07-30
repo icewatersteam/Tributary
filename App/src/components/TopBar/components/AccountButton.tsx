@@ -13,27 +13,32 @@ interface AccountButtonProps {}
 const AccountButton: React.FC<AccountButtonProps> = (props) => {
   const iceWater = useiceWater();
 
-  const [onPresentAccountModal] = useModal(<AccountModal />)  
-  
-  const { account, status, connect } = useWallet()
+  const [onPresentAccountModal] = useModal(<AccountModal />)
+
+  const { account, status, connect, reset } = useWallet()
 
   return (
     <StyledAccountButton>
           {!account ? (
           <Button
-            onClick={() => connect('injected')}           
+            onClick={() => connect('injected')}
             size="sm"
             text="Connect Wallet"
             variant="secondary"
           />
         ) : (
-          null
+            <Button
+              onClick={() => reset()}
+              size="sm"
+              text="Disconnect Wallet"
+              variant="secondary"
+            />
           // <Button
           //   onClick={onPresentAccountModal}
           //   size="sm"
           //   text="My Wallet"
           // />
-        )}         
+        )}
     </StyledAccountButton>
   )
 }
