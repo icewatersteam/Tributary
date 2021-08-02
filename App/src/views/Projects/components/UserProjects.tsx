@@ -4,12 +4,14 @@ import Page from '../../../components/Page';
 import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import firebase from "firebase";
 import { useList } from 'react-firebase-hooks/database';
+import { NavLink, useLocation } from "react-router-dom";
 
 
 
 const UserProjects: React.FC = () => {
-
-    const user = useContext(AuthContext);
+    
+    const { pathname } = useLocation();
+    //const user = useContext(AuthContext);
     const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
     return(
@@ -19,9 +21,10 @@ const UserProjects: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th colSpan={5}>My Projects</th>
+                <th colSpan={6}>My Projects</th>
               </tr>
               <tr>
+                <th></th>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Goal</th>
@@ -35,6 +38,16 @@ const UserProjects: React.FC = () => {
               projects.map((project, index) => (
                 String(project.val().user) === String(user.uid) ? (
                     <tr key={project.key}>
+                      <td>
+                          <StyledLink
+                            exact
+                            activeClassName="active"
+                            to="/tributary"
+                            isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
+                          >
+                              Contribute
+                          </StyledLink>
+                      </td>
                       <td>{project.val().name}</td>
                       <td>{project.val().category}</td>
                       <td>{project.val().goal}</td>
@@ -77,6 +90,15 @@ const UserProjectsList = styled.div`
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       border-right: 1px solid rgba(255, 255, 255, 0.2);
     }
+`;
+
+const StyledLink = styled(NavLink)`
+  color: ${props => props.theme.color.purple[400]};
+  font-weight: 700;
+  text-decoration: none;
+  &:hover {
+    color: ${props => props.theme.color.purple[300]};
+  }
 `;
 
 export default UserProjects;
