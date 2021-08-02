@@ -4,7 +4,7 @@ import Page from '../../components/Page';
 import { useWallet } from 'use-wallet';
 //import CreateProject from "./components/CreateProject"
 import UserProjects from "./components/UserProjects";
-import { NavLink } from "react-router-dom"
+import { NavLink, useLocation } from "react-router-dom"
 import Card from '../../components/Card'
 import Button from '../../components/Button';
 
@@ -20,6 +20,7 @@ const Projects: React.FC = () => {
   //const user = useContext(AuthContext);
 
   const { account } = useWallet();
+  const { pathname } = useLocation();
 
   /*
   // Here are just a few examples using firebase
@@ -137,6 +138,16 @@ const Projects: React.FC = () => {
           {!loading && projects &&
             projects.map((project, index) => (
               <tr key={project.key}>
+                <td>
+                  <StyledLink
+                    exact
+                    activeClassName="active"
+                    to="/tributary"
+                    isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
+                  >
+                      Contribute
+                  </StyledLink>
+                </td>
                 <td>{project.val().name}</td>
                 <td>{project.val().category}</td>
                 <td>{project.val().goal}</td>
