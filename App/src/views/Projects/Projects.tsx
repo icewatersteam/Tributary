@@ -1,4 +1,4 @@
-timport React, { /*useContext,*/ useState } from 'react';
+import React, { /*useContext,*/ useState } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
 import { useWallet } from 'use-wallet';
