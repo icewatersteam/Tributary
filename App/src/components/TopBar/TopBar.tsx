@@ -27,19 +27,7 @@ const TopBar: React.FC = () => {
             display: 'flex',
             justifyContent: 'flex-end'
           }}>
-            
-            { user ? (
-                <>
-                  <StyledLink exact className="signout" activeClassName="active" to="/signout">Sign Out</StyledLink>
-                  <AccountButton />
-                </>
-            ) : (
-                <>
-                  <StyledLink exact activeClassName="active" to="/signin">Sign In</StyledLink>
-                </>
-            )}
-          
-            
+          <AccountButton />  
           </div>
         </StyledTopBarInner>
       </Container>
