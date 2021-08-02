@@ -1,13 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, { /*useContext,*/ useState } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
+import { useWallet } from 'use-wallet';
 //import CreateProject from "./components/CreateProject"
 import UserProjects from "./components/UserProjects";
 import { NavLink } from "react-router-dom"
 import Card from '../../components/Card'
 import Button from '../../components/Button';
 
-import { AuthContext } from "../../contexts/Auth/AuthContext";
+//import { AuthContext } from "../../contexts/Auth/AuthContext";
 
 //import Hero from "./components/Hero"
 
@@ -16,7 +17,9 @@ import firebase from "firebase";
 import { useList } from 'react-firebase-hooks/database';
 
 const Projects: React.FC = () => {
-  const user = useContext(AuthContext);
+  //const user = useContext(AuthContext);
+
+  const { account } = useWallet();
 
   /*
   // Here are just a few examples using firebase
@@ -53,14 +56,14 @@ const Projects: React.FC = () => {
   const [projectGoal, setProjectGoal] = useState(0);
   const [projectWallet, setProjectWallet] = useState('');
 
-  const clearInputs = () => {
+  /*const clearInputs = () => {
     setProjectName('')
     setProjectCategory('')
     setProjectGoal(0)
     setProjectWallet('')
-  }
+  }*/
 
-  const onCreateProject = () => {
+  /*const onCreateProject = () => {
 
     if ( !user ) {
       return
@@ -82,14 +85,13 @@ const Projects: React.FC = () => {
       pid: newProjectRef.key
     })
 
-    /*Update Global numBeneficiaries*/
+    //Update Global numBeneficiaries
     !loading && projects ? (
         firebase.database().ref('Global/numBeneficiaries').set(String(projects.length))
     ):(
         firebase.database().ref('Global/numBeneficiaries').set(String(0))
     )
-    /********************************/
-  }
+  }*/
 
     return(
 <Page>
@@ -113,7 +115,7 @@ const Projects: React.FC = () => {
           <StyledLink to='/signin'>Sign in to manage your projects</StyledLink>
         </LoginToCreate>
     )*/}
-      {user && (<UserProjects />)}
+      {account && (<UserProjects />)}
       <ProjectsList>
         {error && <strong>Error: {error}</strong>}
         {loading && <span>Loading...</span>}
