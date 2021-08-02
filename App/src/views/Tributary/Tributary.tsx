@@ -133,7 +133,7 @@ const Tributary: React.FC = ({  }) => {
                   <select name="project" id="project" style={{width: '100%'}}>
                       {!loading && projects &&
                         projects.map((project, index) => (
-                          <option value = {String(index)} style={{backgroundColor: '#424242'}}>{project.val().name}</option>
+                          <option value = {String(index)} style={{backgroundColor: '#424242'}}>{project.val().name} (ID:{project.key})</option>
                         ))}
                   </select>
                   <Spacer></Spacer>
