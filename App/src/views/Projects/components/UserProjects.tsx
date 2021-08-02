@@ -5,11 +5,13 @@ import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import firebase from "firebase";
 import { useList } from 'react-firebase-hooks/database';
 import { NavLink, useLocation } from "react-router-dom";
+import { useWallet } from 'use-wallet';
 
 
 
 const UserProjects: React.FC = () => {
-    
+
+    const { account } = useWallet();
     const { pathname } = useLocation();
     //const user = useContext(AuthContext);
     const [projects, loading, error] = useList(firebase.database().ref('/projects'));
@@ -36,7 +38,7 @@ const UserProjects: React.FC = () => {
             <tbody>
             {!loading && projects &&
               projects.map((project, index) => (
-                String(project.val().user) === String(user.uid) ? (
+                String(project.val().wallet) === String(account) ? (
                     <tr key={project.key}>
                       <td>
                           <StyledLink
