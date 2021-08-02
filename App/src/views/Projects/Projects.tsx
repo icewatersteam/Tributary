@@ -123,9 +123,10 @@ const Projects: React.FC = () => {
         <table>
           <thead>
             <tr>
-                <th colSpan={5}>All Projects</th>
+                <th colSpan={6}>All Projects</th>
             </tr>
             <tr>
+              <th></th>
               <th>Name</th>
               <th>Category</th>
               <th>Goal</th>
