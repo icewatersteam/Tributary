@@ -1,21 +1,21 @@
 import Web3 from 'web3';
-import React, { useCallback, useEffect, useMemo, useState, useContext, FormEventHandler, ChangeEvent } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, /*useContext,*/ FormEventHandler, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
 import PageHeader from '../../components/PageHeader';
 import Button from '../../components/Button';
 import Spacer from '../../components/Spacer';
 import TokenSymbol from '../../components/TokenSymbol';
-import AccountButton from '../../components/TopBar/components/AccountButton'
-import SignInButton from './components/SignInButton'
+import AccountButton from '../../components/TopBar/components/AccountButton';
+import SignInButton from './components/SignInButton';
+
+//Transaction dependencies
 
 import { Switch, Route, NavLink, useLocation, Link } from "react-router-dom";
 import numeral from 'numeral';
-//import useiceWater from '../../hooks/useIceWater';
-//import { BidData, AskData } from '../../ice-water/types';
 import { useWallet } from 'use-wallet';
 import { useForm } from 'react-hook-form';
-import { AuthContext } from "../../contexts/Auth/AuthContext";
+//import { AuthContext } from "../../contexts/Auth/AuthContext";
 
 import TxModal from '../../components/TopBar/components/TxModal';
 import useTransactionsModal from '../../hooks/useTransactionsModal';
@@ -28,24 +28,16 @@ import { useList } from 'react-firebase-hooks/database';
 interface onProps {
   amount: number;
 }
-/*
-interface iceBidAskData {
-  bid?: BidData,
-  ask?: AskData,
-  icePrice?: number
-}
-*/
 
 const Tributary: React.FC = ({  }) => {
-
-  const user = useContext(AuthContext);
+  //const user = useContext(AuthContext);
   const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
   const [goal, setGoal] = useState('1 Billion');
   const [contribution, setContribution] = useState(0);
   const [H2OTokens, setH2OTokens] = useState(0);
+  const [recieveH2O, setRecieveH2O] = useState(false);
 
-  //const iceWater = useiceWater();
   const addTransaction = useTransactionAdder();
   const allTransactions = useAllTransactions();
 
@@ -53,28 +45,10 @@ const Tributary: React.FC = ({  }) => {
   const wallet = useWallet();
   const { pathname } = useLocation();
 
-  // const { path } = this.props.match;
   const path = "/tributary"
   const title = "Tributary"
   const symbol = "TRIB"
 
-  /*const [{ bid, ask, icePrice }, setIceBidAsk] = useState<iceBidAskData>({});
-  const fetchIceBidAsk = useCallback(async () => {
-    const [bid, ask, icePrice] = await Promise.all([
-      iceWater.getIceBid(),
-      iceWater.getIceAsk(),
-      iceWater.getIcePrice()
-    ]);
-
-    setIceBidAsk({ bid, ask, icePrice });
-  }, [iceWater, setIceBidAsk]);
-
-  useEffect(() => {
-    if (iceWater) {
-      fetchIceBidAsk().catch((err) => console.error(err.stack));
-    }
-  }, [iceWater, status]);
-  */
   const [onPresentTransactionModal, onDismissTransactionModal] = useTransactionsModal(
     <TxModal showRecent={false} onDismiss={() => onDismissTransactionModal()} />,
   );
@@ -99,29 +73,6 @@ const Tributary: React.FC = ({  }) => {
     firebase.database().ref('Global/currTotDeposited').set(String(total));
     /*************************************/
 
-    /*Update amountDeposited for user*/
-    if (user) {
-        total = 0;
-        let refPath = 'users/' + String(user.uid) + '/amountDeposited'
-        firebase.database().ref(refPath).get().then((snapshot) => {
-            total = Number(snapshot.val())
-        });
-        total = total + Number(contribution);
-        firebase.database().ref(refPath).set(String(total));
-
-    /*********************************/
-
-    /*Update lifetimeDeposited for user*/
-        total = 0;
-        refPath = 'users/' + String(user.uid) + '/lifetimeDeposited'
-        firebase.database().ref(refPath).get().then((snapshot) => {
-            total = Number(snapshot.val())
-        });
-        total = total + Number(contribution);
-        firebase.database().ref(refPath).set(String(total));
-    }
-    /*********************************/
-
     alert("Handle Submit. Amount: " + contribution);
     return
   }
@@ -136,18 +87,6 @@ const Tributary: React.FC = ({  }) => {
     total = total - Number((H2OTokens * 1.24).toFixed(4));
     firebase.database().ref('Global/currTotDeposited').set(String(total));
     /**************************************/
-
-    /*Update amountDeposited for user*/
-    if (user) {
-        total = 0;
-        let refPath = 'users/' + String(user.uid) + '/amountDeposited'
-        firebase.database().ref(refPath).get().then((snapshot) => {
-            total = Number(snapshot.val())
-        });
-        total = total - Number((H2OTokens * 1.24).toFixed(4));
-        firebase.database().ref(refPath).set(String(total));
-    }
-    /*********************************/
 
     alert ("Handle Submit. Amount: " + H2OTokens);
     return
@@ -165,12 +104,15 @@ const Tributary: React.FC = ({  }) => {
   }
 
   // Get the total amount of yveCRV the user has staked in any tributary project
+  // NOT FINISHED
   const getTotalStaked = () => {
-      let total
+      /*let total
       let refPath = 'users/' + String(user.uid) + '/amountDeposited'
       firebase.database().ref(refPath).get().then((snapshot) => {
           total = Number(snapshot.val())
       });
+      return(total)*/
+      let total = 0
       return(total)
   }
 
@@ -185,14 +127,14 @@ const Tributary: React.FC = ({  }) => {
   <div>
     <Card>
        <Styles>
-        <form key="contributeform">
+         <form key="contributeform">
             <div className="inputGrp">
                 <label>Contribution Amount</label>
                   <select name="project" id="project" style={{width: '100%'}}>
-                  {!loading && projects &&
-                    projects.map((project, index) => (
-                      <option value = {String(index)} style={{backgroundColor: '#424242'}}>{project.val().name}</option>
-                    ))}
+                      {!loading && projects &&
+                        projects.map((project, index) => (
+                          <option value = {String(index)} style={{backgroundColor: '#424242'}}>{project.val().name}</option>
+                        ))}
                   </select>
                   <Spacer></Spacer>
                 <div className='inputWrap'>
@@ -210,10 +152,6 @@ const Tributary: React.FC = ({  }) => {
                     }}
                       placeholder="0.00"
                       type='number'
-                      //{...register("amount", {
-                      //    required: true,
-                      //    pattern: /^-?[0-9]\d*\.?\d*$/
-                      //})}
                     />
                     <select name="curency" id="currency">
                         <option value="yveCRV">yveCRV</option>
@@ -221,12 +159,32 @@ const Tributary: React.FC = ({  }) => {
                 </div>
             </div>
             <div className="inputGrp">
-                <label>Staked: <b>{contribution ? contribution : 0}</b> yveCRV </label>
-                <label>tH2O to receive: <b>{H2OTokens ? H2OTokens.toFixed(4) : 0}</b></label>
+                <InfoBlock>
+                    <InfoColumn style={{flex: 7}}>
+                        <StyledInputLabel className="contribution">Staked: <b>{contribution ? contribution : 0}</b> yveCRV </StyledInputLabel>
+                        {
+                            recieveH2O ? (
+                                <StyledInputLabel>tH2O to receive: <b>{H2OTokens ? H2OTokens.toFixed(4) : 0}</b></StyledInputLabel>
+                            ):(
+                                <StyledInputLabel style={{color: '#686868'}}>tH2O to receive: <b>0</b></StyledInputLabel>
+                            )
+                        }
+                    </InfoColumn>
+                    <InfoColumn>
+                        <input type="checkbox" id="checkbox" onChange={
+                            () => {
+                                setRecieveH2O(!recieveH2O);
+                            }
+                        } checked={recieveH2O}></input>
+                    </InfoColumn>
+                    <InfoColumn style={{flex: 6}}>
+                        <StyledInputLabel>I want to recieve tH2O for my donation</StyledInputLabel>
+                    </InfoColumn>
+                </InfoBlock>
             </div>
 
             {account ? (
-                firebase.database().ref('users/').child(user.uid).child('/walletAddress').set(String(account)),
+                //firebase.database().ref('users/').child(user.uid).child('/walletAddress').set(String(account)),
                 <Button
                 type="submit"
                 size="sm"
@@ -290,10 +248,6 @@ const Tributary: React.FC = ({  }) => {
                     }}
                         placeholder="0.00"
                         type='number'
-                        //{...register("amount", {
-                        //    required: true,
-                        //    pattern: /^-?[0-9]\d*\.?\d*$/
-                        //})}
                     />
                     <select name="curency" id="currency">
                         <option value="tH2O">tH2O</option>
@@ -322,31 +276,7 @@ const Tributary: React.FC = ({  }) => {
         </form>
       </Styles>
     </Card>
-    {/*account ? (
-      <Card>
-        <h4>Your Current Position</h4>
-        <YourBidAsk>
-          <YourBidAskColumn>
-            <StyledInputLabel>tH2O</StyledInputLabel>
-            { H2OTokens ? (
-              <div>{numeral(H2OTokens).format('0,0')}</div>
-            ) : (
-              <div>-</div>
-            )}
-          </YourBidAskColumn>
-          <YourBidAskColumn>
-            <StyledInputLabel>H2O Tokens</StyledInputLabel>
-            { "something" ? (
-              <div>{"{import H2O}"}</div>
-            ) : (
-              <div>-</div>
-            )}
-          </YourBidAskColumn>
-        </YourBidAsk>
-      </Card>
-    ) : (
-      null
-  )*/}
+
       {account ? (
         <Card>
           <YourBidAsk>
@@ -373,14 +303,13 @@ const Tributary: React.FC = ({  }) => {
       )}
   </div>;
 
-
   return (
     <Page>
 
       <ResponsiveWrap>
           <PageHeader
             title='Tributary'
-            subtitle='Invest in this project. Give to the river of H2O and get kickbacks as we achieve our goals.'
+            subtitle='Invest in your favorite projects. Give to the river of funds and get kickbacks as they achieve their goals.'
           />
           <Spacer size="md" />
 
@@ -516,18 +445,6 @@ const MarketCard = styled.div`
   -webkit-backdrop-filter: blur(5px);
 `;
 
-// const MarketCard = styled.div`
-//   padding: ${(props) => props.theme.spacing[3]}px;
-//   color: ${(props) => props.theme.color.grey[700]};
-//   -webkit-border-bottom-right-radius: 5px;
-//   -webkit-border-bottom-left-radius: 5px;
-//   -moz-border-radius-bottomright: 5px;
-//   -moz-border-radius-bottomleft: 5px;
-//   border-bottom-right-radius: 5px;
-//   border-bottom-left-radius: 5px;
-//   background-color: ${(props) => props.theme.color.white};
-// `;
-
 const Goal = styled.div`
   font-size: 3rem;
   color: ${(props) => props.theme.color.white};
@@ -567,20 +484,16 @@ const Card = styled.div`
   color: ${(props) => props.theme.color.white};
 `;
 
-// const Card = styled.div`
-//   padding: ${(props) => props.theme.spacing[3]}px;
-//   color: ${(props) => props.theme.color.grey[700]};
-//   -webkit-border-bottom-right-radius: 5px;
-//   -webkit-border-bottom-left-radius: 5px;
-//   -moz-border-radius-bottomright: 5px;
-//   -moz-border-radius-bottomleft: 5px;
-//   border-bottom-right-radius: 5px;
-//   border-bottom-left-radius: 5px;
-//   background-color: ${(props) => props.theme.color.white};
-// `;
-
 const Content = styled.div`
 
+`;
+
+const InfoBlock = styled.div`
+    display: flex;
+`;
+
+const InfoColumn = styled.div`
+    flex: 1;
 `;
 
 const StyledSpacer = styled.div`
