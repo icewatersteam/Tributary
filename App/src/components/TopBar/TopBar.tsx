@@ -12,7 +12,7 @@ import { AuthContext } from "../../contexts/Auth/AuthContext";
 
 const TopBar: React.FC = () => {
 
-  const user = useContext(AuthContext);
+  //const user = useContext(AuthContext);
 
   return (
     <StyledTopBar>
