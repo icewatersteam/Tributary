@@ -7,6 +7,7 @@ import { UseWalletProvider } from 'use-wallet';
 import IceWaterProvider from './contexts/IceWaterProvider';
 import ModalsProvider from './contexts/Modals';
 import { AccountContext } from './contexts/Account/AccountContext';
+import { ProjectContext } from './contexts/Project/ProjectContext';
 import Tributary from './views/Tributary'
 import Login from './views/Login'
 import Home from './views/Home'
@@ -53,6 +54,7 @@ const App: React.FC = () => {
 const Providers: React.FC = ({ children }) => {
 
   const [account, setAccount] = useState('')
+  const [project, setProject] = useState('')
 
   return (
     <ThemeProvider theme={theme}>
@@ -62,10 +64,12 @@ const Providers: React.FC = ({ children }) => {
           <IceWaterProvider>
             <ModalsProvider>
                 <AccountContext.Provider value={{account, setAccount}}>
-                  <>
-                    <Popups />
-                    {children}
-                  </>
+                    <ProjectContext.Provider value={{project, setProject}}>
+                      <>
+                        <Popups />
+                        {children}
+                      </>
+                    </ProjectContext.Provider>
                 </AccountContext.Provider>
             </ModalsProvider>
           </IceWaterProvider>
