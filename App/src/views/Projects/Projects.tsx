@@ -7,6 +7,7 @@ import { NavLink, useLocation } from "react-router-dom"
 import Button from '../../components/Button';
 
 import { AccountContext } from '../../contexts/Account/AccountContext';
+import { ProjectContext } from '../../contexts/Project/ProjectContext';
 
 //import Hero from "./components/Hero"
 
@@ -16,7 +17,7 @@ import { useList } from 'react-firebase-hooks/database';
 
 const Projects: React.FC = () => {
   const { account, setAccount } = useContext(AccountContext);
-  //const { account } = useWallet();
+  const { project, setProject } = useContext(ProjectContext);
   const { pathname } = useLocation();
 
   /*
@@ -114,7 +115,7 @@ const Projects: React.FC = () => {
         </LoginToCreate>
     )*/}
         <br></br>
-      {account && (<UserProjects />)}
+            {account && (<UserProjects />)}
               <ProjectsList>
                 {error && <strong>Error: {error}</strong>}
                 {loading && <span>Loading...</span>}
@@ -132,20 +133,21 @@ const Projects: React.FC = () => {
 
                   <tbody>
                   {!loading && projects &&
-                    projects.map((project, index) => (
-                      <tr key={project.key}>
+                    projects.map((aProject, index) => (
+                      <tr key={aProject.key}>
                         <td className='button'>
                           <StyledLink
                             exact
                             activeClassName="active"
                             to="/tributary"
                             isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
+                            onClick={() => (setProject(aProject.key))}
                           >
                               Contribute
                           </StyledLink>
                         </td>
-                        <td className='name'>{project.val().name}</td>
-                        <td className='id'>{project.key}</td>
+                        <td className='name'>{aProject.val().name}</td>
+                        <td className='id'>{aProject.key}</td>
                       </tr>
                     ))}
                   </tbody>
