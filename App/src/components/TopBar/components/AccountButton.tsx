@@ -1,38 +1,38 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { useWallet } from 'use-wallet';
-import useModal from '../../../hooks/useModal';
 import Button from '../../Button';
-import AccountModal from './AccountModal';
-import useiceWater from '../../../hooks/useIceWater';
 import Web3 from 'web3';
 import { ethers } from 'ethers';
+import { AccountContext } from '../../../contexts/Account/AccountContext';
+declare let window: any;
 
 interface AccountButtonProps {}
 
 const AccountButton: React.FC<AccountButtonProps> = (props) => {
-  const iceWater = useiceWater();
 
-  const [onPresentAccountModal] = useModal(<AccountModal />)
+  const { account, setAccount } = useContext(AccountContext);
 
-  const { account, status, connect, reset } = useWallet()
+  async function connect() {
+      if (window.ethereum) {
+          window.web3 = new Web3(window.ethereum);
+          window.ethereum.enable();
+          const web3 = window.web3;
+          var accounts = await web3.eth.getAccounts();
+		  setAccount(accounts[0]);
+      }
+  }
 
   return (
     <StyledAccountButton>
           {!account ? (
           <Button
-            onClick={() => connect('injected')}
+            onClick={() => connect()}
             size="sm"
             text="Connect Wallet"
             variant="secondary"
           />
         ) : (
-            <Button
-              onClick={() => reset()}
-              size="sm"
-              text="Disconnect Wallet"
-              variant="secondary"
-            />
+            null
           // <Button
           //   onClick={onPresentAccountModal}
           //   size="sm"
