@@ -5,33 +5,28 @@ import { AuthContext } from "../../../contexts/Auth/AuthContext";
 import firebase from "firebase";
 import { useList } from 'react-firebase-hooks/database';
 import { NavLink, useLocation } from "react-router-dom";
-import { useWallet } from 'use-wallet';
-
-
+import { AccountContext } from '../../../contexts/Account/AccountContext';
 
 const UserProjects: React.FC = () => {
 
-    const { account } = useWallet();
+    const { account, setAccount } = useContext(AccountContext);
     const { pathname } = useLocation();
-    //const user = useContext(AuthContext);
     const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
     return(
+        <>
         <UserProjectsList>
           {error && <strong>Error: {error}</strong>}
           {loading && <span>Loading...</span>}
           <table>
             <thead>
               <tr>
-                <th colSpan={6}>My Projects</th>
+                <th colSpan={3}>My Projects</th>
               </tr>
               <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Goal</th>
-                <th>Wallet</th>
-                <th>ID</th>
+                <th className='button'></th>
+                <th className='name'>Name</th>
+                <th className='id'>ID</th>
               </tr>
             </thead>
 
@@ -40,7 +35,7 @@ const UserProjects: React.FC = () => {
               projects.map((project, index) => (
                 String(project.val().wallet) === String(account) ? (
                     <tr key={project.key}>
-                      <td>
+                      <td className="button">
                           <StyledLink
                             exact
                             activeClassName="active"
@@ -50,11 +45,8 @@ const UserProjects: React.FC = () => {
                               Contribute
                           </StyledLink>
                       </td>
-                      <td>{project.val().name}</td>
-                      <td>{project.val().category}</td>
-                      <td>{project.val().goal}</td>
-                      <td>{project.val().wallet}</td>
-                      <td>{project.key}</td>
+                      <td className='name'>{project.val().name}</td>
+                      <td className='id'>{project.key}</td>
                     </tr>
                 ):(
                     null
@@ -62,36 +54,53 @@ const UserProjects: React.FC = () => {
               ))}
             </tbody>
           </table>
-          <br></br>
         </UserProjectsList>
+        <br></br>
+        </>
     );
 }
 
 const UserProjectsList = styled.div`
-    table {
+
+-webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+
+  background-color: rgba(255, 255, 255, 0.1);
+
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+
+  table {
       width: 100%;
-      text-align: left;
-    }
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-bottom: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border-spacing: 0;
+    text-align: left;
+  }
 
-    table tr th {
-      padding: 10px 20px;
-    }
+  td, th {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    padding: 20px;
+  }
 
-    table td {
-      padding: 20px;
-    }
+  .button, .name {
+      width: 25%;
+  }
+  .id {
+      width: 75%;
+  }
 
-    th {
+  table tr:last-child > td {
+      border-bottom: none;
+  }
+
+  th {
       text-align: center;
-    }
-
-    table tr {
-      background-color: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      border-right: 1px solid rgba(255, 255, 255, 0.2);
-    }
+  }
 `;
 
 const StyledLink = styled(NavLink)`
