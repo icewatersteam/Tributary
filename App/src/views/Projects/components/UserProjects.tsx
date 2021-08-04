@@ -6,10 +6,12 @@ import firebase from "firebase";
 import { useList } from 'react-firebase-hooks/database';
 import { NavLink, useLocation } from "react-router-dom";
 import { AccountContext } from '../../../contexts/Account/AccountContext';
+import { ProjectContext } from '../../../contexts/Project/ProjectContext';
 
 const UserProjects: React.FC = () => {
 
     const { account, setAccount } = useContext(AccountContext);
+    const { project, setProject } = useContext(ProjectContext);
     const { pathname } = useLocation();
     const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
@@ -32,21 +34,22 @@ const UserProjects: React.FC = () => {
 
             <tbody>
             {!loading && projects &&
-              projects.map((project, index) => (
-                String(project.val().wallet) === String(account) ? (
-                    <tr key={project.key}>
+              projects.map((aProject, index) => (
+                String(aProject.val().wallet) === String(account) ? (
+                    <tr key={aProject.key}>
                       <td className="button">
                           <StyledLink
                             exact
                             activeClassName="active"
                             to="/tributary"
                             isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
+                            onClick={() => (setProject(aProject.key))}
                           >
                               Contribute
                           </StyledLink>
                       </td>
-                      <td className='name'>{project.val().name}</td>
-                      <td className='id'>{project.key}</td>
+                      <td className='name'>{aProject.val().name}</td>
+                      <td className='id'>{aProject.key}</td>
                     </tr>
                 ):(
                     null
