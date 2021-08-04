@@ -14,8 +14,8 @@ import SignInButton from './components/SignInButton';
 import { Switch, Route, NavLink, useLocation, Link } from "react-router-dom";
 import numeral from 'numeral';
 import { useForm } from 'react-hook-form';
-//import { AuthContext } from "../../contexts/Auth/AuthContext";
 import { AccountContext } from '../../contexts/Account/AccountContext';
+import { ProjectContext } from '../../contexts/Project/ProjectContext';
 
 import TxModal from '../../components/TopBar/components/TxModal';
 import useTransactionsModal from '../../hooks/useTransactionsModal';
@@ -32,8 +32,8 @@ interface onProps {
 const Tributary: React.FC = ({  }) => {
 
   const { account, setAccount } = useContext(AccountContext);
+  const { project, setProject } = useContext(ProjectContext);
 
-  //const user = useContext(AuthContext);
   const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
   const [contribution, setContribution] = useState(0);
@@ -130,11 +130,24 @@ const Tributary: React.FC = ({  }) => {
          <form key="contributeform">
             <div className="inputGrp">
                 <label>Contribution Amount</label>
-                  <select name="project" id="project" style={{width: '100%'}}>
-                      {!loading && projects &&
-                        projects.map((project, index) => (
-                          <option value = {String(index)} style={{backgroundColor: '#424242'}}>{project.val().name} (ID:{project.key})</option>
-                        ))}
+                  <select name="project" id="project" style={{width: '100%'}} onChange={(e) => (setProject(e.target.value))}>
+                  {!loading && projects ? (
+                      project ? (
+                          projects.map((aProject, index) => (
+                              (project === aProject.key) ? (
+                                  <option value = {aProject.key} style={{backgroundColor: '#424242'}} selected>{aProject.val().name} (ID:{aProject.key})</option>
+                              ):(
+                                  <option value = {aProject.key} style={{backgroundColor: '#424242'}}>{aProject.val().name} (ID:{aProject.key})</option>
+                              )
+                          ))
+                      ):(
+                          projects.map((aProject, index) => (
+                              <option value = {aProject.key} style={{backgroundColor: '#424242'}}>{aProject.val().name} (ID:{aProject.key})</option>
+                          ))
+                      )
+                  ):(
+                      null
+                  )}
                   </select>
                   <Spacer></Spacer>
                 <div className='inputWrap'>
