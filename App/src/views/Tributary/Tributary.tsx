@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import React, { useCallback, useEffect, useMemo, useState, /*useContext,*/ FormEventHandler, ChangeEvent } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useContext, FormEventHandler, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
 import PageHeader from '../../components/PageHeader';
@@ -13,9 +13,9 @@ import SignInButton from './components/SignInButton';
 
 import { Switch, Route, NavLink, useLocation, Link } from "react-router-dom";
 import numeral from 'numeral';
-import { useWallet } from 'use-wallet';
 import { useForm } from 'react-hook-form';
 //import { AuthContext } from "../../contexts/Auth/AuthContext";
+import { AccountContext } from '../../contexts/Account/AccountContext';
 
 import TxModal from '../../components/TopBar/components/TxModal';
 import useTransactionsModal from '../../hooks/useTransactionsModal';
@@ -30,10 +30,12 @@ interface onProps {
 }
 
 const Tributary: React.FC = ({  }) => {
+
+  const { account, setAccount } = useContext(AccountContext);
+
   //const user = useContext(AuthContext);
   const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
-  const [goal, setGoal] = useState('1 Billion');
   const [contribution, setContribution] = useState(0);
   const [H2OTokens, setH2OTokens] = useState(0);
   const [recieveH2O, setRecieveH2O] = useState(false);
@@ -41,8 +43,6 @@ const Tributary: React.FC = ({  }) => {
   const addTransaction = useTransactionAdder();
   const allTransactions = useAllTransactions();
 
-  const { account, status } = useWallet();
-  const wallet = useWallet();
   const { pathname } = useLocation();
 
   const path = "/tributary"
@@ -360,22 +360,6 @@ const Tributary: React.FC = ({  }) => {
 
             </TradeCard>
           </TradeCardWrap>
-
-          <Spacer size="md" />
-
-          <MarketCard>
-            <StyledInputLabel>Tributary Goal</StyledInputLabel>
-            <Goal>
-            {goal}
-            <ProgressBar/>
-            </Goal>
-            <StyledInputLabel>
-                We airdrop rewards to investors as we meet our goals.
-            </StyledInputLabel>
-            <StyledInputLabel>
-              Last airdrop: {"{import data}"}
-            </StyledInputLabel>
-          </MarketCard>
 
       </ResponsiveWrap>
     </Page>
