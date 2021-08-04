@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
@@ -6,6 +6,7 @@ import { UseWalletProvider } from 'use-wallet';
 
 import IceWaterProvider from './contexts/IceWaterProvider';
 import ModalsProvider from './contexts/Modals';
+import { AccountContext } from './contexts/Account/AccountContext';
 import Tributary from './views/Tributary'
 import Login from './views/Login'
 import Home from './views/Home'
@@ -21,7 +22,6 @@ import { createBundle } from 'typescript';
 
 const App: React.FC = () => {
 
-  
   return (
     <Providers>
       <Router>
@@ -31,7 +31,7 @@ const App: React.FC = () => {
           </Route>
           <Route path="/about">
             <About />
-          </Route>         
+          </Route>
           <Route path="/tributary">
             <Tributary />
           </Route>
@@ -51,17 +51,22 @@ const App: React.FC = () => {
 };
 
 const Providers: React.FC = ({ children }) => {
+
+  const [account, setAccount] = useState('')
+
   return (
     <ThemeProvider theme={theme}>
       <UseWalletProvider chainId={config.chainId}>
         <Provider store={store}>
           <Updaters />
           <IceWaterProvider>
-            <ModalsProvider>              
-              <>
-                <Popups />
-                {children}
-              </>              
+            <ModalsProvider>
+                <AccountContext.Provider value={{account, setAccount}}>
+                  <>
+                    <Popups />
+                    {children}
+                  </>
+                </AccountContext.Provider>
             </ModalsProvider>
           </IceWaterProvider>
         </Provider>
@@ -99,7 +104,7 @@ result = multiply(10, 7)
 console.log("multiply: " + result)
 
 // function with callback
-function addWithCallback(a:number, b:number, cb: (label:string, val:any) => void ){  
+function addWithCallback(a:number, b:number, cb: (label:string, val:any) => void ){
   cb('addWithCallback: ', a + b)
 }
 
