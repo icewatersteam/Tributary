@@ -1,14 +1,12 @@
-import React, { /*useContext,*/ useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
-import { useWallet } from 'use-wallet';
 //import CreateProject from "./components/CreateProject"
 import UserProjects from "./components/UserProjects";
 import { NavLink, useLocation } from "react-router-dom"
-import Card from '../../components/Card'
 import Button from '../../components/Button';
 
-//import { AuthContext } from "../../contexts/Auth/AuthContext";
+import { AccountContext } from '../../contexts/Account/AccountContext';
 
 //import Hero from "./components/Hero"
 
@@ -17,9 +15,8 @@ import firebase from "firebase";
 import { useList } from 'react-firebase-hooks/database';
 
 const Projects: React.FC = () => {
-  //const user = useContext(AuthContext);
-
-  const { account } = useWallet();
+  const { account, setAccount } = useContext(AccountContext);
+  //const { account } = useWallet();
   const { pathname } = useLocation();
 
   /*
@@ -116,50 +113,44 @@ const Projects: React.FC = () => {
           <StyledLink to='/signin'>Sign in to manage your projects</StyledLink>
         </LoginToCreate>
     )*/}
+        <br></br>
       {account && (<UserProjects />)}
-      <ProjectsList>
-        {error && <strong>Error: {error}</strong>}
-        {loading && <span>Loading...</span>}
-        <table>
-          <thead>
-            <tr>
-                <th colSpan={6}>All Projects</th>
-            </tr>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Goal</th>
-              <th>Wallet</th>
-              <th>ID</th>
-            </tr>
-          </thead>
+              <ProjectsList>
+                {error && <strong>Error: {error}</strong>}
+                {loading && <span>Loading...</span>}
+                <table>
+                  <thead>
+                    <tr>
+                        <th colSpan={3}>All Projects</th>
+                    </tr>
+                    <tr>
+                      <th className='button'></th>
+                      <th className='name'>Name</th>
+                      <th className='id'>ID</th>
+                    </tr>
+                  </thead>
 
-          <tbody>
-          {!loading && projects &&
-            projects.map((project, index) => (
-              <tr key={project.key}>
-                <td>
-                  <StyledLink
-                    exact
-                    activeClassName="active"
-                    to="/tributary"
-                    isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
-                  >
-                      Contribute
-                  </StyledLink>
-                </td>
-                <td>{project.val().name}</td>
-                <td>{project.val().category}</td>
-                <td>{project.val().goal}</td>
-                <td>{project.val().wallet}</td>
-                <td>{project.key}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </ProjectsList>
-
+                  <tbody>
+                  {!loading && projects &&
+                    projects.map((project, index) => (
+                      <tr key={project.key}>
+                        <td className='button'>
+                          <StyledLink
+                            exact
+                            activeClassName="active"
+                            to="/tributary"
+                            isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
+                          >
+                              Contribute
+                          </StyledLink>
+                        </td>
+                        <td className='name'>{project.val().name}</td>
+                        <td className='id'>{project.key}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </ProjectsList>
       </ResponsiveWrap>
     </Page>
   );
@@ -169,6 +160,7 @@ const ResponsiveWrap = styled.div`
   color: ${props => props.theme.color.white};
   width: 100%;
   text-align: center;
+  max-width: 500px
 `;
 
 const LoginToCreate = styled.div`
@@ -178,6 +170,11 @@ const LoginToCreate = styled.div`
     button {
       text-align: center;
     }
+`;
+  /*background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);*/
+const ProjectsCard = styled.div`
 `;
 
 const StyledLink = styled(NavLink)`
@@ -189,31 +186,52 @@ const StyledLink = styled(NavLink)`
   }
 `;
 
+const Card = styled.div`
+  padding: ${(props) => props.theme.spacing[3]}px;
+  color: ${(props) => props.theme.color.white};
+`;
+
 const ProjectsList = styled.div`
+-webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+
+  background-color: rgba(255, 255, 255, 0.1);
+
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+
   table {
     width: 100%;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-bottom: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border-spacing: 0;
     text-align: left;
   }
 
-  table tr th {
-    padding: 10px 20px;
-  }
-
-  table td {
+  table td, table th {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
     padding: 20px;
   }
 
-  th {
-    text-align: center;
+  table tr:last-child > td {
+      border-bottom: none;
   }
 
-  table tr {
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  th {
+      text-align: center;
   }
+
+  .button, .name {
+      width: 25%;
+  }
+  .id {
+      width: 75%;
+  }
+
 `;
 
 export default Projects;
