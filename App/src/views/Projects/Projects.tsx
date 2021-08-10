@@ -2,12 +2,11 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Page from '../../components/Page';
 //import CreateProject from "./components/CreateProject"
+import ProjectTab from "./components/ProjectTab"
 import UserProjects from "./components/UserProjects";
-import { NavLink, useLocation } from "react-router-dom"
 import Button from '../../components/Button';
 
 import { AccountContext } from '../../contexts/Account/AccountContext';
-import { ProjectContext } from '../../contexts/Project/ProjectContext';
 
 //import Hero from "./components/Hero"
 
@@ -17,8 +16,6 @@ import { useList } from 'react-firebase-hooks/database';
 
 const Projects: React.FC = () => {
   const { account, setAccount } = useContext(AccountContext);
-  const { project, setProject } = useContext(ProjectContext);
-  const { pathname } = useLocation();
 
   /*
   // Here are just a few examples using firebase
@@ -50,10 +47,11 @@ const Projects: React.FC = () => {
   // Get a list of ALL of the projects
   const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
-  const [projectName, setProjectName] = useState('');
+  /*const [projectName, setProjectName] = useState('');
   const [projectCategory, setProjectCategory] = useState('');
   const [projectGoal, setProjectGoal] = useState(0);
-  const [projectWallet, setProjectWallet] = useState('');
+  const [projectWallet, setProjectWallet] = useState('');*/
+
 
   /*const clearInputs = () => {
     setProjectName('')
@@ -93,68 +91,65 @@ const Projects: React.FC = () => {
   }*/
 
     return(
-<Page>
+        <Page>
 
-      <ResponsiveWrap>
+              <ResponsiveWrap>
 
-      {/* user ? (
-        <CreateProject
-          name={projectName}
-          category={projectCategory}
-          goal={projectGoal}
-          wallet={projectWallet}
-          setName={setProjectName}
-          setCategory={setProjectCategory}
-          setGoal={setProjectGoal}
-          setWallet={setProjectWallet}
-          onSubmit={onCreateProject}
-        />
-      ) : (
-        <LoginToCreate>
-          <StyledLink to='/signin'>Sign in to manage your projects</StyledLink>
-        </LoginToCreate>
-    )*/}
-        <br></br>
-            {account && (<UserProjects />)}
-              <ProjectsList>
-                {error && <strong>Error: {error}</strong>}
-                {loading && <span>Loading...</span>}
-                <table>
-                  <thead>
-                    <tr>
-                        <th colSpan={3}>All Projects</th>
-                    </tr>
-                    <tr>
-                      <th className='button'></th>
-                      <th className='name'>Name</th>
-                      <th className='id'>ID</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                  {!loading && projects &&
-                    projects.map((aProject, index) => (
-                      <tr key={aProject.key}>
-                        <td className='button'>
-                          <StyledLink
-                            exact
-                            activeClassName="active"
-                            to="/tributary"
-                            isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
-                            onClick={() => (setProject(aProject.key))}
-                          >
-                              Contribute
-                          </StyledLink>
-                        </td>
-                        <td className='name'>{aProject.val().name}</td>
-                        <td className='id'>{aProject.key}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </ProjectsList>
-      </ResponsiveWrap>
-    </Page>
+              {/* user ? (
+                <CreateProject
+                  name={projectName}
+                  category={projectCategory}
+                  goal={projectGoal}
+                  wallet={projectWallet}
+                  setName={setProjectName}
+                  setCategory={setProjectCategory}
+                  setGoal={setProjectGoal}
+                  setWallet={setProjectWallet}
+                  onSubmit={onCreateProject}
+                />
+              ) : (
+                <LoginToCreate>
+                  <StyledLink to='/signin'>Sign in to manage your projects</StyledLink>
+                </LoginToCreate>
+            )*/}
+                <br></br>
+                    {account && (<UserProjects />)}
+                      <ProjectsList>
+                        {error && <strong>Error: {error}</strong>}
+                        {loading && <span>Loading...</span>}
+                        <table>
+                          <thead>
+                            <tr>
+                                <th colSpan={4}>All Projects</th>
+                            </tr>
+                            <tr>
+                              <th className='button'></th>
+                              <th className='name'>Name</th>
+                              <th className='id'>ID</th>
+                              <th className='dropdown'></th>
+                            </tr>
+                          </thead>
+                         </table>
+                         <table>
+                          <tbody>
+                          {!loading && projects &&
+                            projects.map((aProject, index) => (
+                                <tr>
+                                    <ProjectTab
+                                        projectName={aProject.val().name}
+                                        projectKey={aProject.key}
+                                        projectCategory={aProject.val().category}
+                                        projectWallet={aProject.val().wallet}
+                                        projectDescription={aProject.val().description}
+                                        projectGoal={Number(aProject.val().goal)}
+                                    />
+                                </tr>
+                          ))}
+                          </tbody>
+                        </table>
+                      </ProjectsList>
+              </ResponsiveWrap>
+            </Page>
   );
 };
 
@@ -173,35 +168,13 @@ const LoginToCreate = styled.div`
       text-align: center;
     }
 `;
-  /*background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);*/
-const ProjectsCard = styled.div`
-`;
-
-const StyledLink = styled(NavLink)`
-  color: ${props => props.theme.color.purple[400]};
-  font-weight: 700;
-  text-decoration: none;
-  &:hover {
-    color: ${props => props.theme.color.purple[300]};
-  }
-`;
-
-const Card = styled.div`
-  padding: ${(props) => props.theme.spacing[3]}px;
-  color: ${(props) => props.theme.color.white};
-`;
 
 const ProjectsList = styled.div`
--webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
-    border-radius: 15px;
-
-  background-color: rgba(255, 255, 255, 0.1);
-
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
   box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
-
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 
   table {
@@ -228,12 +201,28 @@ const ProjectsList = styled.div`
   }
 
   .button, .name {
-      width: 25%;
-  }
-  .id {
-      width: 75%;
+      width: 20%;
   }
 
+  .id {
+      width: 50%;
+  }
+  .dropdown {
+      width: 10%;
+  }
+
+  .dropdown button {
+      background-color: transparent;
+      color: ${(props) => props.theme.color.white};
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+  }
+
+  .dropdown button:hover {
+      background-color: rgba(255,255,255,0.1);
+  }
 `;
 
 export default Projects;
