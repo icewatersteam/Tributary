@@ -7,6 +7,7 @@ import { useList } from 'react-firebase-hooks/database';
 import { NavLink, useLocation } from "react-router-dom";
 import { AccountContext } from '../../../contexts/Account/AccountContext';
 import { ProjectContext } from '../../../contexts/Project/ProjectContext';
+import ProjectTab from './ProjectTab';
 
 const UserProjects: React.FC = () => {
 
@@ -31,25 +32,21 @@ const UserProjects: React.FC = () => {
                 <th className='id'>ID</th>
               </tr>
             </thead>
-
+          </table>
+          <table>
             <tbody>
             {!loading && projects &&
               projects.map((aProject, index) => (
                 String(aProject.val().wallet) === String(account) ? (
-                    <tr key={aProject.key}>
-                      <td className="button">
-                          <StyledLink
-                            exact
-                            activeClassName="active"
-                            to="/tributary"
-                            isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
-                            onClick={() => (setProject(aProject.key))}
-                          >
-                              Contribute
-                          </StyledLink>
-                      </td>
-                      <td className='name'>{aProject.val().name}</td>
-                      <td className='id'>{aProject.key}</td>
+                    <tr>
+                        <ProjectTab
+                            projectName={aProject.val().name}
+                            projectKey={aProject.key}
+                            projectCategory={aProject.val().category}
+                            projectWallet={aProject.val().wallet}
+                            projectDescription={aProject.val().description}
+                            projectGoal={Number(aProject.val().goal)}
+                        />
                     </tr>
                 ):(
                     null
@@ -64,46 +61,59 @@ const UserProjects: React.FC = () => {
 }
 
 const UserProjectsList = styled.div`
-
--webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
-    border-radius: 15px;
-
-  background-color: rgba(255, 255, 255, 0.1);
-
-  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
-
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-
-  table {
-      width: 100%;
     -webkit-border-radius: 15px;
     -moz-border-radius: 15px;
-    border-bottom: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
-    border-spacing: 0;
-    text-align: left;
-  }
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 
-  td, th {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-    padding: 20px;
-  }
+    table {
+      width: 100%;
+      -webkit-border-radius: 15px;
+      -moz-border-radius: 15px;
+      border-bottom: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      border-spacing: 0;
+      text-align: left;
+    }
 
-  .button, .name {
-      width: 25%;
-  }
-  .id {
-      width: 75%;
-  }
+    table td, table th {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+      padding: 20px;
+    }
 
-  table tr:last-child > td {
-      border-bottom: none;
-  }
+    table tr:last-child > td {
+        border-bottom: none;
+    }
 
-  th {
-      text-align: center;
-  }
+    th {
+        text-align: center;
+    }
+
+    .button, .name {
+        width: 20%;
+    }
+
+    .id {
+        width: 50%;
+    }
+    .dropdown {
+        width: 10%;
+    }
+
+    .dropdown button {
+        background-color: transparent;
+        color: ${(props) => props.theme.color.white};
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+    }
+
+    .dropdown button:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
 `;
 
 const StyledLink = styled(NavLink)`
