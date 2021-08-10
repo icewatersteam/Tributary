@@ -9,8 +9,8 @@ const Nav: React.FC = () => {
   return (
     <StyledNav>
       {/* <StyledLink exact activeClassName="active" to="/">Home</StyledLink>
-      
-      <StyledLink 
+
+      <StyledLink
         exact
         activeClassName="active"
         to="/ice"
@@ -19,7 +19,7 @@ const Nav: React.FC = () => {
         Ice
       </StyledLink>
 
-      <StyledLink 
+      <StyledLink
         exact
         activeClassName="active"
         to="/steam"
@@ -27,16 +27,16 @@ const Nav: React.FC = () => {
       >
         Steam
       </StyledLink> */}
-      <StyledLink 
+      <StyledLink
         exact
         activeClassName="active"
         to="/tributary"
-        isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/exchange`].includes(pathname)}
+        isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/withdraw`].includes(pathname)}
       >
-        Tributary
+        Dashboard
       </StyledLink>
       <StyledLink exact activeClassName="active" to="/about">About</StyledLink>
-      <StyledLink exact activeClassName="active" to="/projects">Projects</StyledLink>      
+      <StyledLink exact activeClassName="active" to="/projects">Explore</StyledLink>
 
       {/* <StyledLink exact activeClassName="active" to="/docs">Docs</StyledLink>        */}
     </StyledNav>
