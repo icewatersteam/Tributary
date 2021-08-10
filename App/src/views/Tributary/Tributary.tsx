@@ -37,8 +37,8 @@ const Tributary: React.FC = ({  }) => {
   const [projects, loading, error] = useList(firebase.database().ref('/projects'));
 
   const [contribution, setContribution] = useState(0);
-  const [H2OTokens, setH2OTokens] = useState(0);
-  const [recieveH2O, setRecieveH2O] = useState(false);
+  const [rewardTokens, setRewardTokens] = useState(0);
+
 
   const addTransaction = useTransactionAdder();
   const allTransactions = useAllTransactions();
@@ -77,18 +77,18 @@ const Tributary: React.FC = ({  }) => {
     return
   }
 
-  const handleExchangeSubmit = () : FormEventHandler<HTMLFormElement> => {
+  const handleWithdrawSubmit = () : FormEventHandler<HTMLFormElement> => {
 
     /*Update global currTotDeposited value*/
     let total = 0;
     firebase.database().ref('Global/currTotDeposited').get().then((snapshot) => {
         total = Number(snapshot.val())
     });
-    total = total - Number((H2OTokens * 1.24).toFixed(4));
+    total = total - Number((rewardTokens * 1.24).toFixed(4));
     firebase.database().ref('Global/currTotDeposited').set(String(total));
     /**************************************/
 
-    alert ("Handle Submit. Amount: " + H2OTokens);
+    alert ("Handle Submit. Amount: " + rewardTokens);
     return
   }
 
@@ -97,10 +97,10 @@ const Tributary: React.FC = ({  }) => {
     return
   }
 
-  // Set the amount to be contributed and tH2O to recieve, should the user submit the current contribution
+  // Set the amount to be contributed and reward tokens to recieve, should the user submit the current contribution
   function setContributionVals(thisContribution:number) {
       setContribution(thisContribution)
-      setH2OTokens(thisContribution / 1.24)
+      setRewardTokens(thisContribution / 1.24)
   }
 
   // Get the total amount of yveCRV the user has staked in any tributary project
@@ -116,7 +116,7 @@ const Tributary: React.FC = ({  }) => {
       return(total)
   }
 
-  // Get the total amount of tH2O they have held currently
+  // Get the total amount of rewards they have held currently
   const getTotalHeld = () => {
       //UNFINISHED: NEED TO REFER TO WALLET
       let total = 0
@@ -129,27 +129,19 @@ const Tributary: React.FC = ({  }) => {
        <Styles>
          <form key="contributeform">
             <div className="inputGrp">
-                <label>Contribution Amount</label>
+                <label>Project</label>
                   <select name="project" id="project" style={{width: '100%'}} onChange={(e) => (setProject(e.target.value))}>
-                  {!loading && projects ? (
-                      project ? (
-                          projects.map((aProject, index) => (
-                              (project === aProject.key) ? (
-                                  <option value = {aProject.key} style={{backgroundColor: '#424242'}} selected>{aProject.val().name} (ID:{aProject.key})</option>
-                              ):(
-                                  <option value = {aProject.key} style={{backgroundColor: '#424242'}}>{aProject.val().name} (ID:{aProject.key})</option>
-                              )
-                          ))
-                      ):(
-                          projects.map((aProject, index) => (
+                      {!loading && projects && projects.map((aProject, index) => (
+                          ( project && project === aProject.key) ? (
+                              console.log('Here'),
+                              <option value = {aProject.key} style={{backgroundColor: '#424242'}} selected>{aProject.val().name} (ID:{aProject.key})</option>
+                          ):(
                               <option value = {aProject.key} style={{backgroundColor: '#424242'}}>{aProject.val().name} (ID:{aProject.key})</option>
-                          ))
-                      )
-                  ):(
-                      null
-                  )}
+                          )
+                      ))}
                   </select>
                   <Spacer></Spacer>
+                <label>Contribution Amount</label>
                 <div className='inputWrap'>
                     <input
                       autoFocus
@@ -171,30 +163,6 @@ const Tributary: React.FC = ({  }) => {
                     </select>
                 </div>
             </div>
-            <div className="inputGrp">
-                <InfoBlock>
-                    <InfoColumn style={{flex: 7}}>
-                        <StyledInputLabel className="contribution">Staked: <b>{contribution ? contribution : 0}</b> yveCRV </StyledInputLabel>
-                        {
-                            recieveH2O ? (
-                                <StyledInputLabel>tH2O to receive: <b>{H2OTokens ? H2OTokens.toFixed(4) : 0}</b></StyledInputLabel>
-                            ):(
-                                <StyledInputLabel style={{color: '#686868'}}>tH2O to receive: <b>0</b></StyledInputLabel>
-                            )
-                        }
-                    </InfoColumn>
-                    <InfoColumn>
-                        <input type="checkbox" id="checkbox" onChange={
-                            () => {
-                                setRecieveH2O(!recieveH2O);
-                            }
-                        } checked={recieveH2O}></input>
-                    </InfoColumn>
-                    <InfoColumn style={{flex: 6}}>
-                        <StyledInputLabel>I want to recieve tH2O for my donation</StyledInputLabel>
-                    </InfoColumn>
-                </InfoBlock>
-            </div>
 
             {account ? (
                 //firebase.database().ref('users/').child(user.uid).child('/walletAddress').set(String(account)),
@@ -206,7 +174,12 @@ const Tributary: React.FC = ({  }) => {
                 onClick={handleContributeSubmit}
                 />
             ):(
-                <AccountButton />
+                <>
+                    <InfoBlock>
+                        Want to contribute? Connect your metamask wallet and get started!
+                    </InfoBlock>
+                    <AccountButton />
+                </>
             )}
 
         </form>
@@ -224,14 +197,6 @@ const Tributary: React.FC = ({  }) => {
               null
             )}
           </YourBidAskColumn>
-          <YourBidAskColumn>
-            <StyledInputLabel>Total tH2O Earned</StyledInputLabel>
-            { true ? (
-              <div> Import from records: {numeral(getTotalHeld).format('0,0')}</div>
-            ) : (
-              null
-            )}
-          </YourBidAskColumn>
         </YourBidAsk>
       </Card>
     ) : (
@@ -239,23 +204,35 @@ const Tributary: React.FC = ({  }) => {
     )}
   </div>;
 
-  const Exchange = () =>
+  const Withdraw = () =>
   <div>
     <Card>
       <Styles>
-      <form key="exchangeform">
+      <form key="withdrawform">
             <div className="inputGrp">
-                <label>Exchange tH2O back to yveCRV</label>
+                <label>Project</label>
+                <select name="project" id="project" style={{width: '100%'}} onChange={(e) => (setProject(e.target.value))}>
+                    {!loading && projects && projects.map((aProject, index) => (
+                        ( project && project === aProject.key) ? (
+                            console.log('Here'),
+                            <option value = {aProject.key} style={{backgroundColor: '#424242'}} selected>{aProject.val().name} (ID:{aProject.key})</option>
+                        ):(
+                            <option value = {aProject.key} style={{backgroundColor: '#424242'}}>{aProject.val().name} (ID:{aProject.key})</option>
+                        )
+                    ))}
+                </select>
+                <Spacer></Spacer>
+                <label>Withdrawal Amount</label>
                 <div className='inputWrap'>
                     <input
                       autoFocus
-                      key="exchange"
-                      name="H2OTokens"
-                      value={H2OTokens}
+                      key="withdraw"
+                      name="rewardTokens"
+                      value={rewardTokens}
                       onChange={(
                         e: React.ChangeEvent<HTMLInputElement>,
                     ): void => {
-                        setH2OTokens(
+                        setRewardTokens(
                             parseFloat(e.target.value),
                         );
                     }}
@@ -263,13 +240,9 @@ const Tributary: React.FC = ({  }) => {
                         type='number'
                     />
                     <select name="curency" id="currency">
-                        <option value="tH2O">tH2O</option>
+                        <option value='tH2O'>tH2O</option>
                     </select>
                 </div>
-            </div>
-            <div className="inputGrp">
-                <label><b>{H2OTokens ? H2OTokens : 0} tH2O tokens will be burned</b></label>
-                <label>yveCRV Amount to receive: <b>{H2OTokens ? (H2OTokens * 1.24).toFixed(4) : 0}</b></label>
             </div>
 
             {
@@ -277,12 +250,17 @@ const Tributary: React.FC = ({  }) => {
                     <Button
                     type="submit"
                     size="sm"
-                    text={"Withdraw"}
+                    text={"Withdraw Rewards"}
                     variant="tertiary"
-                    onClick={handleExchangeSubmit}
+                    onClick={handleWithdrawSubmit}
                     />
                 ):(
-                    <AccountButton />
+                    <>
+                        <InfoBlock>
+                            Want to contribute? Connect your metamask wallet and get started!
+                        </InfoBlock>
+                        <AccountButton />
+                    </>
                 )
             }
 
@@ -301,14 +279,14 @@ const Tributary: React.FC = ({  }) => {
                 null
               )}
             </YourBidAskColumn>
-            <YourBidAskColumn>
+            {/*<YourBidAskColumn>
               <StyledInputLabel>Total tH2O Earned</StyledInputLabel>
               { true ? (
                 <div> Import from records: {numeral(getTotalHeld).format('0,0')}</div>
               ) : (
                 null
               )}
-            </YourBidAskColumn>
+            </YourBidAskColumn>*/}
           </YourBidAsk>
         </Card>
       ) : (
@@ -320,33 +298,20 @@ const Tributary: React.FC = ({  }) => {
     <Page>
 
       <ResponsiveWrap>
-          <PageHeader
-            title='Tributary'
-            subtitle='Invest in your favorite projects. Give to the river of funds and get kickbacks as they achieve their goals.'
-          />
-          <Spacer size="md" />
+              <PageHeader
+                title='Dashboard'
+                subtitle='Invest in your favorite projects. Give to the river of funds and get kickbacks as they achieve their goals.'
+              />
 
-          <MarketCard>
-            <Header>
-                Start Earning Rewards
-            </Header>
-            <br></br>
-            <StyledInputLabel>
-                We want to reward early adopters of our project.
-                <br></br>
-                Just stake yveCRV to contribute to the project and you will receive kickbacks as we reach our goals!
-            </StyledInputLabel>
+              {account && <StyledLabel><label>Connected: {account}</label></StyledLabel>}
 
-          </MarketCard>
-
-          <Spacer size="md" />
 
           <TradeCardWrap>
             <TradeCard>
                 <Tabs className="cardTabs">
                 <NavLink
                   to={`${path}/contribute`}
-                  className="cardTab"
+                  className="cardTab1"
                   exact
                   activeClassName="cardTabActive"
                   isActive={() => [`${path}`, `${path}/contribute`].includes(pathname)}>
@@ -354,11 +319,11 @@ const Tributary: React.FC = ({  }) => {
                 </NavLink>
 
                 <NavLink
-                  to={`${path}/exchange`}
-                  className="cardTab"
+                  to={`${path}/withdraw`}
+                  className="cardTab2"
                   exact
                   activeClassName="cardTabActive">
-                    Exchange
+                    Withdraw
                   </NavLink>
               </Tabs>
 
@@ -367,7 +332,7 @@ const Tributary: React.FC = ({  }) => {
                 <Switch>
                   <Route path={`${path}`} exact component={Contribute} />
                   <Route path={`${path}/contribute`} component={Contribute} />
-                  <Route path={`${path}/exchange`} component={Exchange} />
+                  <Route path={`${path}/withdraw`} component={Withdraw} />
                 </Switch>
               </Content>
 
@@ -401,6 +366,19 @@ const pageStyle = styled.div`
 const ResponsiveWrap = styled.div`
   width: 100%;
   max-width: 500px;
+`;
+
+const StyledLabel = styled.div`
+    text-align: center;
+
+    label {
+        color: ${(props) => props.theme.color.white};
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+        margin: 0px 0px 0px 0px;
+        padding: 0;
+    }
 `;
 
 const TitleHeader = styled.div`
@@ -448,7 +426,7 @@ const Goal = styled.div`
 `;
 
 const TradeCardWrap = styled.div`
--webkit-border-radius: 15px;
+  -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -464,11 +442,11 @@ const TradeCard = styled.div`
 `;
 
 const Tabs = styled.div`
-
 `;
 
 const YourBidAsk = styled.div`
   display: flex;
+  text-align: center;
 `;
 
 const YourBidAskColumn = styled.div`
@@ -482,15 +460,12 @@ const Card = styled.div`
 `;
 
 const Content = styled.div`
-
 `;
 
 const InfoBlock = styled.div`
-    display: flex;
-`;
-
-const InfoColumn = styled.div`
-    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
 `;
 
 const StyledSpacer = styled.div`
@@ -540,7 +515,7 @@ const Styles = styled.div`
  }
 
  option {
-     background: rgbs(255, 255, 255, 0.1)
+     background: rgba(255, 255, 255, 0.1)
  }
 
  input {
