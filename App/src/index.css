@@ -18,7 +18,7 @@ div.cardTabs {
   display: flex;
 }
 
-div.cardTabs a.cardTab {
+div.cardTabs a.cardTab1 {
   display: block;
   flex: 1;
   padding: 20px;
@@ -26,12 +26,26 @@ div.cardTabs a.cardTab {
   text-decoration: none;
   font-weight: bold;
   color: rgba(255, 255, 255, 0.8);
-  /* -webkit-border-top-left-radius: 5px;
-  -webkit-border-top-right-radius: 5px;
-  -moz-border-radius-topleft: 5px;
-  -moz-border-radius-topright: 5px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px; */
+  -webkit-border-top-left-radius: 15px;
+  -moz-border-radius-topleft: 15px;
+  border-top-left-radius: 15px;
+  text-align: center;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+div.cardTabs a.cardTab2 {
+  display: block;
+  flex: 1;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.8);
+  -webkit-border-top-right-radius: 15px;
+  -moz-border-radius-topright:15px;
+  border-top-right-radius: 15px;
   text-align: center;
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
@@ -40,9 +54,9 @@ div.cardTabs a.cardTab {
 
 
 div.cardTabs .cardTabInit:not(.cardTabActive) {
-  /* background: #ffffff; */  
+  /* background: #ffffff; */
   /* border-bottom: 5px solid #fff; */
-  position: relative;  
+  position: relative;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border-bottom: 0 !important;
