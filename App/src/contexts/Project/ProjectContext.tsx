@@ -5,5 +5,5 @@ export type ProjectContextType = {
     setProject: (project: string) => void;
 }
 
-export const ProjectContext = React.createContext<ProjectContextType>({ project: '', setProject: account => console.warn('no project')});
+export const ProjectContext = React.createContext<ProjectContextType>({ project: '', setProject: project => console.warn('no project')});
 export const useProject = () => useContext(ProjectContext);
