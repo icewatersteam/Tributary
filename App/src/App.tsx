@@ -8,6 +8,7 @@ import IceWaterProvider from './contexts/IceWaterProvider';
 import ModalsProvider from './contexts/Modals';
 import { AccountContext } from './contexts/Account/AccountContext';
 import { ProjectContext } from './contexts/Project/ProjectContext';
+import { RoleContext } from './contexts/Role/RoleContext';
 import Tributary from './views/Tributary'
 import Login from './views/Login'
 import Home from './views/Home'
@@ -55,6 +56,7 @@ const Providers: React.FC = ({ children }) => {
 
   const [account, setAccount] = useState('')
   const [project, setProject] = useState('')
+  const [useBeneficiary, setUseBeneficiary] = useState(false)
 
   return (
     <ThemeProvider theme={theme}>
@@ -65,10 +67,12 @@ const Providers: React.FC = ({ children }) => {
             <ModalsProvider>
                 <AccountContext.Provider value={{account, setAccount}}>
                     <ProjectContext.Provider value={{project, setProject}}>
-                      <>
-                        <Popups />
-                        {children}
-                      </>
+                        <RoleContext.Provider value={{useBeneficiary, setUseBeneficiary}}>
+                          <>
+                            <Popups />
+                            {children}
+                          </>
+                        </RoleContext.Provider>
                     </ProjectContext.Provider>
                 </AccountContext.Provider>
             </ModalsProvider>
