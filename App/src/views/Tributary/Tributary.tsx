@@ -7,23 +7,20 @@ import Button from '../../components/Button';
 import Spacer from '../../components/Spacer';
 import TokenSymbol from '../../components/TokenSymbol';
 import AccountButton from '../../components/TopBar/components/AccountButton';
-import SignInButton from './components/SignInButton';
-
-//Transaction dependencies
-
+import UserInfo from './components/UserInfo';
+import BeneficiariesList from './components/BeneficiariesList';
 import { Switch, Route, NavLink, useLocation, Link } from "react-router-dom";
 import numeral from 'numeral';
 import { useForm } from 'react-hook-form';
 import { AccountContext } from '../../contexts/Account/AccountContext';
 import { ProjectContext } from '../../contexts/Project/ProjectContext';
-
+import { RoleContext } from '../../contexts/Role/RoleContext';
 import TxModal from '../../components/TopBar/components/TxModal';
 import useTransactionsModal from '../../hooks/useTransactionsModal';
-
 import { useTransactionAdder, useAllTransactions } from '../../state/transactions/hooks';
-
 import firebase from 'firebase';
 import { useList } from 'react-firebase-hooks/database';
+declare let window: any;
 
 interface onProps {
   amount: number;
@@ -31,6 +28,10 @@ interface onProps {
 
 const Tributary: React.FC = ({  }) => {
 
+  if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+  }
+  const { useBeneficiary, setUseBeneficiary } = useContext(RoleContext);
   const { account, setAccount } = useContext(AccountContext);
   const { project, setProject } = useContext(ProjectContext);
 
@@ -38,7 +39,6 @@ const Tributary: React.FC = ({  }) => {
 
   const [contribution, setContribution] = useState(0);
   const [rewardTokens, setRewardTokens] = useState(0);
-
 
   const addTransaction = useTransactionAdder();
   const allTransactions = useAllTransactions();
@@ -303,9 +303,10 @@ const Tributary: React.FC = ({  }) => {
                 subtitle='Invest in your favorite projects. Give to the river of funds and get kickbacks as they achieve their goals.'
               />
 
-              {account && <StyledLabel><label>Connected: {account}</label></StyledLabel>}
-
-
+              {account && <UserInfo
+                  account={account}
+              />}
+              <Spacer></Spacer>
           <TradeCardWrap>
             <TradeCard>
                 <Tabs className="cardTabs">
@@ -339,6 +340,11 @@ const Tributary: React.FC = ({  }) => {
             </TradeCard>
           </TradeCardWrap>
 
+          {
+            (account && !useBeneficiary) ? (
+                <BeneficiariesList />
+            ):(null)
+          }
       </ResponsiveWrap>
     </Page>
   );
@@ -404,20 +410,6 @@ const TitleHeader = styled.div`
         background-color: rgba(255, 255, 255, 0.1);
       }
     }
-`;
-
-const MarketCard = styled.div`
-  padding: ${(props) => props.theme.spacing[3]}px;
-  color: ${(props) => props.theme.color.white};
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
 `;
 
 const Goal = styled.div`
@@ -555,6 +547,36 @@ input[type=number] {
    color: ${props => props.theme.color.red[100]};
    margin: 10px 0px 0px 3px;
  }
+`;
+
+const MarketCard = styled.div`
+  padding: ${(props) => props.theme.spacing[3]}px;
+  color: ${(props) => props.theme.color.white};
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  .infoCard {
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: ${props => props.theme.borderRadius}px;
+      padding: 0 ${props => props.theme.spacing[3]}px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .infoCard div.value {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      text-align: center;
+      align-items: center;
+  }
 `;
 
 export default Tributary;
