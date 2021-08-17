@@ -7,6 +7,7 @@ import UserProjects from "./components/UserProjects";
 import Button from '../../components/Button';
 
 import { AccountContext } from '../../contexts/Account/AccountContext';
+import { RoleContext } from '../../contexts/Role/RoleContext';
 
 //import Hero from "./components/Hero"
 
@@ -16,6 +17,7 @@ import { useList } from 'react-firebase-hooks/database';
 
 const Projects: React.FC = () => {
   const { account, setAccount } = useContext(AccountContext);
+  const { useBeneficiary, setUseBeneficiary } = useContext(RoleContext);
 
   /*
   // Here are just a few examples using firebase
@@ -113,7 +115,7 @@ const Projects: React.FC = () => {
                 </LoginToCreate>
             )*/}
                 <br></br>
-                    {account && (<UserProjects />)}
+                    {account && useBeneficiary && (<UserProjects />)}
                       <ProjectsList>
                         {error && <strong>Error: {error}</strong>}
                         {loading && <span>Loading...</span>}
