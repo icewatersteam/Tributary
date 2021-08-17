@@ -4,6 +4,7 @@ import Button from '../../Button';
 import Web3 from 'web3';
 import { ethers } from 'ethers';
 import { AccountContext } from '../../../contexts/Account/AccountContext';
+import { RoleContext } from '../../../contexts/Role/RoleContext';
 declare let window: any;
 
 interface AccountButtonProps {}
@@ -11,6 +12,7 @@ interface AccountButtonProps {}
 const AccountButton: React.FC<AccountButtonProps> = (props) => {
 
   const { account, setAccount } = useContext(AccountContext);
+  const { useBeneficiary, setUseBeneficiary } = useContext(RoleContext);
 
   async function connect() {
       if (window.ethereum) {
@@ -32,7 +34,21 @@ const AccountButton: React.FC<AccountButtonProps> = (props) => {
             variant="secondary"
           />
         ) : (
-            null
+            useBeneficiary ? (
+                <Button
+                  onClick={() => setUseBeneficiary(false)}
+                  size="sm"
+                  text="Switch to Patron dashboard"
+                  variant="secondary"
+                />
+            ):(
+                <Button
+                  onClick={() => setUseBeneficiary(true)}
+                  size="sm"
+                  text="Switch to Beneficiary dashboard"
+                  variant="secondary"
+                />
+            )
           // <Button
           //   onClick={onPresentAccountModal}
           //   size="sm"
