@@ -19,6 +19,9 @@ import TxModal from '../../components/TopBar/components/TxModal';
 import useTransactionsModal from '../../hooks/useTransactionsModal';
 import { useTransactionAdder, useAllTransactions } from '../../state/transactions/hooks';
 import firebase from 'firebase';
+/*Test*/
+import admin from 'firebase-admin';
+/******/
 import { useList } from 'react-firebase-hooks/database';
 declare let window: any;
 
@@ -35,7 +38,7 @@ const Tributary: React.FC = ({  }) => {
   const { account, setAccount } = useContext(AccountContext);
   const { project, setProject } = useContext(ProjectContext);
 
-  const [projects, loading, error] = useList(firebase.database().ref('/projects'));
+  const [projects, loading, error] = useList(firebase.database().ref('/beneficiaries'));
 
   const [contribution, setContribution] = useState(0);
   const [rewardTokens, setRewardTokens] = useState(0);
