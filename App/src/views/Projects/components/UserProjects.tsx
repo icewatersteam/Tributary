@@ -14,7 +14,7 @@ const UserProjects: React.FC = () => {
     const { account, setAccount } = useContext(AccountContext);
     const { project, setProject } = useContext(ProjectContext);
     const { pathname } = useLocation();
-    const [projects, loading, error] = useList(firebase.database().ref('/projects'));
+    const [projects, loading, error] = useList(firebase.database().ref('/beneficiaries'));
 
     return(
         <>
@@ -24,12 +24,13 @@ const UserProjects: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th colSpan={3}>My Projects</th>
+                <th colSpan={4} className='mainHeader'>My Projects</th>
               </tr>
               <tr>
                 <th className='button'></th>
                 <th className='name'>Name</th>
-                <th className='id'>ID</th>
+                <th className='wallet'>Wallet</th>
+                <th className='dropdown'></th>
               </tr>
             </thead>
           </table>
@@ -37,13 +38,12 @@ const UserProjects: React.FC = () => {
             <tbody>
             {!loading && projects &&
               projects.map((aProject, index) => (
-                String(aProject.val().wallet) === String(account) ? (
+                String(aProject.key) === String(account) ? (
                     <tr>
                         <ProjectTab
                             projectName={aProject.val().name}
-                            projectKey={aProject.key}
+                            projectWallet={aProject.key}
                             projectCategory={aProject.val().category}
-                            projectWallet={aProject.val().wallet}
                             projectDescription={aProject.val().description}
                             projectGoal={Number(aProject.val().goal)}
                         />
@@ -92,14 +92,14 @@ const UserProjectsList = styled.div`
     }
 
     .button, .name {
-        width: 20%;
+        width: 15%;
     }
 
-    .id {
-        width: 50%;
+    .wallet {
+        width: 60%;
     }
     .dropdown {
-        width: 10%;
+        width: 5%;
     }
 
     .dropdown button {
