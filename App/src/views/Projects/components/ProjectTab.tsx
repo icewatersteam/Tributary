@@ -6,7 +6,6 @@ import { ProjectContext } from '../../../contexts/Project/ProjectContext';
 
 interface ProjectTabProps {
     projectName: string,
-    projectKey: string,
     projectCategory: string,
     projectWallet: string,
     projectDescription: string,
@@ -16,7 +15,6 @@ interface ProjectTabProps {
 
 const ProjectTab: React.FC<ProjectTabProps> = ({
     projectName,
-    projectKey,
     projectCategory,
     projectWallet,
     projectDescription,
@@ -31,7 +29,7 @@ const ProjectTab: React.FC<ProjectTabProps> = ({
     const { pathname } = useLocation();
     return(
         <Card>
-            <tr key={projectKey} className="tab">
+            <tr key={projectWallet} className="tab">
               <td className='button'>
                 {!dropped ? (
                     <StyledLink
@@ -39,16 +37,16 @@ const ProjectTab: React.FC<ProjectTabProps> = ({
                       activeClassName="active"
                       to="/tributary"
                       isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/withdraw`].includes(pathname)}
-                      onClick={() => (setProject(projectKey))}
+                      onClick={() => (setProject(projectWallet))}
                     >
                         Contribute
                     </StyledLink>
                 ):(null)}
               </td>
               <td className='name'>{projectName}</td>
-              <td className='id'>{projectKey}</td>
+              <td className='id'>{projectWallet}</td>
               <td className='dropdown'>
-                  <button id={projectKey} data-dropped='false' onClick={(e) => setDropped(!dropped)} className="collapse">
+                  <button id={projectWallet} data-dropped='false' onClick={(e) => setDropped(!dropped)} className="collapse">
                       {
                           dropped ? (
                              '-'
@@ -81,10 +79,6 @@ const ProjectTab: React.FC<ProjectTabProps> = ({
                                         <td>Address:</td>
                                         <td>{projectWallet}</td>
                                     </tr>
-                                    <tr>
-                                        <td>ID:</td>
-                                        <td>{projectKey}</td>
-                                    </tr>
                                 </table>
                             </div>
                             <br></br>
@@ -102,7 +96,7 @@ const ProjectTab: React.FC<ProjectTabProps> = ({
                                     activeClassName="active"
                                     to="/tributary"
                                     isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/withdraw`].includes(pathname)}
-                                    onClick={() => (setProject(projectKey))}
+                                    onClick={() => (setProject(projectWallet))}
                                 >
                                     <Button
                                         size="sm"
@@ -116,7 +110,7 @@ const ProjectTab: React.FC<ProjectTabProps> = ({
                                     activeClassName="active"
                                     to="/tributary/withdraw"
                                     isActive={() => [`/tributary`, `/tributary/contribute`, `/tributary/withdraw`].includes(pathname)}
-                                    onClick={() => (setProject(projectKey))}
+                                    onClick={() => (setProject(projectWallet))}
                                 >
                                     <Button
                                         size="sm"
