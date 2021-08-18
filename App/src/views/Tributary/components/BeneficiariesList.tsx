@@ -15,7 +15,7 @@ const BeneficiariesList: React.FC<BeneficiariesListProps> = () => {
     const { useBeneficiary, setUseBeneficiary } = useContext(RoleContext);
     const { account, setAccount } = useContext(AccountContext);
 
-    const [projects, loading, error] = useList(firebase.database().ref('/projects'));
+    const [projects, loading, error] = useList(firebase.database().ref('/beneficiaries'));
     var addresses: string[];
     var beneficiaries: string[][];
 
@@ -30,7 +30,7 @@ const BeneficiariesList: React.FC<BeneficiariesListProps> = () => {
     if (addresses && !loading && projects) {
         addresses.map((anAddress, aIndex) => {
             projects.map((aProject, pIndex) => {
-                if (aProject.val().wallet === anAddress) {
+                if (aProject.key === anAddress) {
                     beneficiaries.push([aProject.val().name, anAddress])
                 }
             })
