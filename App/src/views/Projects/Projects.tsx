@@ -47,7 +47,7 @@ const Projects: React.FC = () => {
   */
 
   // Get a list of ALL of the projects
-  const [projects, loading, error] = useList(firebase.database().ref('/projects'));
+  const [projects, loading, error] = useList(firebase.database().ref('/beneficiaries'));
 
   /*const [projectName, setProjectName] = useState('');
   const [projectCategory, setProjectCategory] = useState('');
@@ -127,7 +127,7 @@ const Projects: React.FC = () => {
                             <tr>
                               <th className='button'></th>
                               <th className='name'>Name</th>
-                              <th className='id'>ID</th>
+                              <th className='wallet'>Wallet</th>
                               <th className='dropdown'></th>
                             </tr>
                           </thead>
@@ -139,9 +139,8 @@ const Projects: React.FC = () => {
                                 <tr>
                                     <ProjectTab
                                         projectName={aProject.val().name}
-                                        projectKey={aProject.key}
+                                        projectWallet={aProject.key}
                                         projectCategory={aProject.val().category}
-                                        projectWallet={aProject.val().wallet}
                                         projectDescription={aProject.val().description}
                                         projectGoal={Number(aProject.val().goal)}
                                     />
@@ -159,7 +158,7 @@ const ResponsiveWrap = styled.div`
   color: ${props => props.theme.color.white};
   width: 100%;
   text-align: center;
-  max-width: 500px
+  max-width: 710px;
 `;
 
 const LoginToCreate = styled.div`
@@ -203,14 +202,14 @@ const ProjectsList = styled.div`
   }
 
   .button, .name {
-      width: 20%;
+      width: 15%;
   }
 
-  .id {
-      width: 50%;
+  .wallet {
+      width: 60%;
   }
   .dropdown {
-      width: 10%;
+      width: 5%;
   }
 
   .dropdown button {
