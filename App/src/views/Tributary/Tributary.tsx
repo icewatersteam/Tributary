@@ -19,9 +19,6 @@ import TxModal from '../../components/TopBar/components/TxModal';
 import useTransactionsModal from '../../hooks/useTransactionsModal';
 import { useTransactionAdder, useAllTransactions } from '../../state/transactions/hooks';
 import firebase from 'firebase';
-/*Test*/
-import admin from 'firebase-admin';
-/******/
 import { useList } from 'react-firebase-hooks/database';
 declare let window: any;
 
