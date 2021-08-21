@@ -5,12 +5,15 @@ import Web3 from 'web3';
 import { ethers } from 'ethers';
 import { AccountContext } from '../../../contexts/Account/AccountContext';
 import { RoleContext } from '../../../contexts/Role/RoleContext';
+import { useList } from 'react-firebase-hooks/database';
+import firebase from 'firebase';
 declare let window: any;
 
 interface AccountButtonProps {}
 
 const AccountButton: React.FC<AccountButtonProps> = (props) => {
 
+  const [users, loading, error] = useList(firebase.database().ref('/users'));
   const { account, setAccount } = useContext(AccountContext);
   const { useBeneficiary, setUseBeneficiary } = useContext(RoleContext);
 
@@ -21,6 +24,23 @@ const AccountButton: React.FC<AccountButtonProps> = (props) => {
           const web3 = window.web3;
           var accounts = await web3.eth.getAccounts();
 		  setAccount(accounts[0]);
+
+          let userExists = false
+          if (!loading && users) {
+              users.map((aUser, index) => {
+                  if (accounts[0] === aUser.key) {
+                      userExists = true
+                  }
+              })
+          }
+
+          if (!userExists) {
+              firebase.database().ref('users').child(accounts[0]).set({
+                  amountDeposited: "0",
+                  isBeneficiary: "false",
+                  lifetimeDeposited: "0"
+              })
+          }
       }
   }
 
