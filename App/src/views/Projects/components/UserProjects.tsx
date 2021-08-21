@@ -24,7 +24,7 @@ const UserProjects: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th colSpan={4} className='mainHeader'>My Projects</th>
+                <th colSpan={4} className='mainHeader'>My Project</th>
               </tr>
               <tr>
                 <th className='button'></th>
