@@ -34,7 +34,7 @@ const AccountButton: React.FC<AccountButtonProps> = (props) => {
               })
           }
 
-          if (!userExists) {
+          if (!userExists && account) {
               firebase.database().ref('users').child(accounts[0]).set({
                   amountDeposited: "0",
                   isBeneficiary: "false",
